@@ -1,10 +1,12 @@
 from pygame import init, Surface, display, event
-from pygame.constants import QUIT
+from pygame.constants import MOUSEBUTTONDOWN, QUIT
 from sys import exit
 
-from utils import SIZE
+from systems.settings import Settings
 
 init()
+settings = Settings()
+SIZE = (settings.video_settings['SIZE']['WIDTH'], settings.video_settings['SIZE']['HEIGHT'])
 window:Surface = display.set_mode(SIZE)
 
 from systems.renderer import Renderer
@@ -24,6 +26,8 @@ if __name__ == '__main__':
     while running:
         for e in event.get():
             if e.type == QUIT: exit()
+            if e.type == MOUSEBUTTONDOWN:
+                print(e)
             
         renderer.render()
         display.flip()

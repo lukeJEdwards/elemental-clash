@@ -2,6 +2,7 @@ from pygame import Surface
 from systems.renderer.screen import Screen
 from utils import ORIGIN
 
+__all__ = ['Renderer']
 
 class Renderer:
     """Renderer for the game.

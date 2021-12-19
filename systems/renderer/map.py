@@ -5,11 +5,10 @@ TODO:
     - way to load map from file
     - to update map to different file
 """
-    
-
 
 from pygame import Surface
 
+__all__ = ['TileMap']
 
 class TileMap:
     def __init__(self, filename):

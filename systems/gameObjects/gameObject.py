@@ -5,6 +5,8 @@ from pygame import Rect, Surface
 from pygame.math import Vector2
 
 
+__all__ = ['RenderObject', 'GameObject', 'Animatable', 'MoveableObject']
+
 class RenderObject:
     """RenderObject class is for anthing that will be rendered to the screen.
     

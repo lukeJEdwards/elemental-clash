@@ -2,6 +2,8 @@ from pygame import Surface
 from systems.gameObjects import ObjectPool
 from utils import ORIGIN
 
+__all__ = ['GAME_OBJECTS', 'GUI_LAYER', 'Screen']
+
 GAME_OBJECTS:str = 'gameobject'
 GUI_LAYER:str = 'gui'
 
@@ -27,7 +29,7 @@ class Screen:
         self.height:int = size[1]
         self.size:tuple = size
         self.overlay:bool = False
-        self.canvas:Surface = Surface(self.size)
+        self.canvas:Surface = Surface(size)
         self.background:Surface = background
         self.object_pool:ObjectPool = ObjectPool()
         

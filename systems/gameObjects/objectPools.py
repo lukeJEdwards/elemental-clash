@@ -1,8 +1,10 @@
 from typing import Optional
 from uuid import uuid4
 
-from systems.gameObjects import RenderObject, GameObject, Animatable
+from systems.gameObjects.gameObject import RenderObject, GameObject, Animatable
 
+
+__all__ = ['ObjectPool', 'GameObjectPool', 'AnimatablePool']
 
 class ObjectPool:
     """Object pool for holding objects.

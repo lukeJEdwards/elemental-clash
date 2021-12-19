@@ -1,5 +1,7 @@
 import time
 
+__all__ = ['get_dt']
+
 def get_dt(previous_time:float, target_fps:int) -> tuple[float, float]:
     """get delta time.
     
@@ -13,7 +15,7 @@ def get_dt(previous_time:float, target_fps:int) -> tuple[float, float]:
     Returns:
         tuple[float, float]: the delta time and last update time.
     """
-    now: float = time.time()
+    now:float = time.time()
     last_updated: float = now - previous_time
     dt:float == last_updated * target_fps
     return dt, last_updated

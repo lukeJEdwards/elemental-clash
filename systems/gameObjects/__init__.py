@@ -1,2 +1,2 @@
-from systems.gameObjects.gameObject import RenderObject, GameObject, Animatable, MoveableObject
-from systems.gameObjects.objectPools import ObjectPool, GameObjectPool, Animatable
+from systems.gameObjects.gameObject import *
+from systems.gameObjects.objectPools import *
