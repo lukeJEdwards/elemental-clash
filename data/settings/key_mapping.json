@@ -1,0 +1,101 @@
+{
+  "ATK_1": {
+    "button": 2,
+    "count": 1,
+    "input_type": 1
+  },
+  "ATK_2": {
+    "button": 2,
+    "count": 2,
+    "input_type": 1
+  },
+  "ATK_3": {
+    "button": 3,
+    "count": 1,
+    "input_type": 1
+  },
+  "ATK_SP": {
+    "hat": {
+      "__tuple__": true,
+      "obj": [
+        1,
+        0
+      ]
+    },
+    "input_type": 3
+  },
+  "DEFEND": {
+    "axis": 4,
+    "input_type": 2,
+    "is_trigger": true
+  },
+  "DOWN": {
+    "axis": 1,
+    "hat": {
+      "__tuple__": true,
+      "obj": [
+        0,
+        -1
+      ]
+    },
+    "input_type": 4
+  },
+  "HEAL": {
+    "hat": {
+      "__tuple__": true,
+      "obj": [
+        0,
+        1
+      ]
+    },
+    "input_type": 3
+  },
+  "JUMP": {
+    "button": 0,
+    "count": 1,
+    "input_type": 1
+  },
+  "LEFT": {
+    "axis": 0,
+    "hat": {
+      "__tuple__": true,
+      "obj": [
+        -1,
+        0
+      ]
+    },
+    "input_type": 4
+  },
+  "RIGHT": {
+    "axis": 0,
+    "hat": {
+      "__tuple__": true,
+      "obj": [
+        1,
+        0
+      ]
+    },
+    "input_type": 4
+  },
+  "ROLL": {
+    "button": 1,
+    "count": 1,
+    "input_type": 1
+  },
+  "RUN": {
+    "axis": 5,
+    "input_type": 2,
+    "is_trigger": true
+  },
+  "UP": {
+    "axis": 1,
+    "hat": {
+      "__tuple__": true,
+      "obj": [
+        0,
+        1
+      ]
+    },
+    "input_type": 4
+  }
+}
