@@ -1,34 +1,36 @@
 from os import getcwd, path
 
-__all__ = ['CWD', 'settingsDirs', 'characterDirs', 'assetsDirs', 'relitive_path']
+__all__ = ['CWD', 'settingsDirs', 'characterDirs', 'assetsDirs']
 
-def relitive_path(*paths:list[str]) -> str: 
-    """create relative path to this directory.
-
-    Returns:
-        str: The path.
-    """
-    return path.join(CWD, *paths)
+def relitive_path(*paths:list[str]) -> str:  return path.join(CWD, *paths)
 
 CWD:str = getcwd()
-SETTINGS_FILES = relitive_path('data', 'settings')
-CHARACTER_FILES = relitive_path('data', 'characters')
-ASSETS = relitive_path('assets')
+SETTINGS_FILES = path.join('data', 'settings')
+CHARACTER_FILES = path.join('data', 'characters')
+ASSETS = path.join('assets')
 
 
 class settingsDirs:
-    VIDEO:str = path.join(SETTINGS_FILES, 'video_settings.json')
-    AUDIO:str = path.join(SETTINGS_FILES, 'audio_settings.json')
-    KEY_MAPPING:str = path.join(SETTINGS_FILES, 'key_mapping.json')
+    VIDEO:str = relitive_path(SETTINGS_FILES, 'video_settings.json')
+    AUDIO:str = relitive_path(SETTINGS_FILES, 'audio_settings.json')
+    KEY_MAPPING:str = relitive_path(SETTINGS_FILES, 'key_mapping.json')
 
 class characterDirs:
     pass
 
+class uiDirs:
+    BUTTONS:str = relitive_path(ASSETS, 'ui', 'buttons')
+    CARDS:str = relitive_path(ASSETS, 'ui', 'cards')
+    GUI:str = relitive_path(ASSETS, 'ui', 'gui')
+    LEVELS:str = relitive_path(ASSETS, 'ui', 'levels')
+    PLAYER_INPUTS:str = relitive_path(ASSETS, 'ui', 'player_inputs')
+    SLIDERS:str = relitive_path(ASSETS, 'ui', 'sliders')
+
 class assetsDirs:
-    FONTS:str = path.join(ASSETS, 'fonts')
-    BACKGROUNDS:str = path.join(ASSETS, 'backgrounds')
-    UI:str = path.join(ASSETS, 'ui')
-    TILES:str = path.join(ASSETS, 'tiles')
-    SPRITES:str = path.join(ASSETS, 'sprites')
-    ICONS:str = path.join(ASSETS, 'icons')
+    FONTS:str = relitive_path(ASSETS, 'fonts')
+    BACKGROUNDS:str = relitive_path(ASSETS, 'backgrounds')
+    UI:uiDirs = uiDirs
+    TILES:str = relitive_path(ASSETS, 'tiles')
+    SPRITES:str = relitive_path(ASSETS, 'sprites')
+    ICONS:str = relitive_path(ASSETS, 'icons')
     

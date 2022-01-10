@@ -1,7 +1,8 @@
 {
+  "FPS_TARGET": 60,
   "FULLSCREEN": false,
-  "SIZE": {
-    "HEIGHT": 720,
-    "WIDTH": 1280
-  }
+  "SIZE": [
+    1280,
+    720
+  ]
 }

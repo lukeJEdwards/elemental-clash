@@ -1,13 +1,153 @@
 {
-  "ATK_1": false,
-  "ATK_2": 113,
-  "ATK_3": 101,
-  "ATK_SP": 120,
-  "DEFEND": false,
-  "HEAL": 104,
-  "JUMP": 32,
-  "LEFT": 97,
-  "RIGHT": 100,
-  "ROLL": 1073742052,
-  "RUN": 1073742053
+  "CONTROLLER": {
+    "ATK_1": {
+      "button": 2,
+      "count": 1,
+      "type": 1
+    },
+    "ATK_2": {
+      "button": 2,
+      "count": 2,
+      "type": 1
+    },
+    "ATK_3": {
+      "button": 3,
+      "count": 1,
+      "type": 1
+    },
+    "ATK_SP": {
+      "button": {
+        "__tuple__": true,
+        "obj": [
+          1,
+          0
+        ]
+      },
+      "type": 3
+    },
+    "DEFEND": {
+      "axis": 4,
+      "is_toggle": true,
+      "type": 2
+    },
+    "DOWN": {
+      "axis": 1,
+      "hat": {
+        "__tuple__": true,
+        "obj": [
+          0,
+          -1
+        ]
+      },
+      "type": 4
+    },
+    "HEAL": {
+      "button": {
+        "__tuple__": true,
+        "obj": [
+          0,
+          1
+        ]
+      },
+      "type": 3
+    },
+    "JUMP": {
+      "button": 0,
+      "count": 1,
+      "type": 1
+    },
+    "LEFT": {
+      "axis": 0,
+      "hat": {
+        "__tuple__": true,
+        "obj": [
+          -1,
+          0
+        ]
+      },
+      "type": 4
+    },
+    "RIGHT": {
+      "axis": 0,
+      "hat": {
+        "__tuple__": true,
+        "obj": [
+          1,
+          0
+        ]
+      },
+      "type": 4
+    },
+    "ROLL": {
+      "button": 1,
+      "count": 1,
+      "type": 1
+    },
+    "RUN": {
+      "axis": 5,
+      "is_toggle": true,
+      "type": 2
+    },
+    "UP": {
+      "axis": 1,
+      "hat": {
+        "__tuple__": true,
+        "obj": [
+          0,
+          1
+        ]
+      },
+      "type": 4
+    }
+  },
+  "KEYBOARD": {
+    "ATK_1": {
+      "button": 1,
+      "count": 1,
+      "type": 1
+    },
+    "ATK_2": {
+      "button": 1,
+      "count": 2,
+      "type": 1
+    },
+    "ATK_3": {
+      "button": 1,
+      "count": 3,
+      "type": 1
+    },
+    "ATK_SP": {
+      "key": 120,
+      "type": 0
+    },
+    "DEFEND": {
+      "button": 3,
+      "count": 1,
+      "type": 1
+    },
+    "HEAL": {
+      "key": 101,
+      "type": 0
+    },
+    "JUMP": {
+      "key": 32,
+      "type": 0
+    },
+    "LEFT": {
+      "key": 97,
+      "type": 0
+    },
+    "RIGHT": {
+      "key": 100,
+      "type": 0
+    },
+    "ROLL": {
+      "key": 1073742048,
+      "type": 0
+    },
+    "RUN": {
+      "key": 1073742049,
+      "type": 0
+    }
+  }
 }
