@@ -66,6 +66,16 @@
     },
     "input_type": 4
   },
+  "MOVE_LEFT": {
+    "axis": 0,
+    "input_type": 2,
+    "is_trigger": false
+  },
+  "MOVE_RIGHT": {
+    "axis": 0,
+    "input_type": 2,
+    "is_trigger": false
+  },
   "RIGHT": {
     "axis": 0,
     "hat": {
