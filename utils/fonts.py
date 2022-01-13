@@ -1,3 +1,8 @@
+from pygame import font
+from pygame.font import Font
+
+from utils.paths import assetsDirs
+
 __all__ = [
     "FONT_NORMAL_S",
     "FONT_NORMAL_M",
@@ -11,10 +16,6 @@ __all__ = [
     "FONT_LIGHT_XXL",
 ]
 
-from pygame import font
-from pygame.font import Font
-
-from utils.paths import assetsDirs
 
 font.init()
 

@@ -1,17 +1,19 @@
 from typing import Optional
 
-__all__ = ["get_dt", "scale_image_2x", "scale_image", "load_image", "load_images", "load_background", "render_text"]
-
 import time
 from pygame import Surface, image, transform
 from pygame.font import Font
 
 from utils.paths import assetsDirs
 
+
+__all__ = ["get_dt", "scale_image_2x", "scale_image", "load_image", "load_images", "load_background", "render_text"]
+
+
 # get delta time (change in time from last time being called)
 def get_dt(previous_time: float) -> tuple[float, float]:
     now: float = time.time()
-    return (0, now) if previous_time < 0 else (now - previous_time, now)
+    return (0, now) if previous_time == 0 else (now - previous_time, now)
 
 
 # scale pygame surface by 2x

@@ -1,0 +1,8 @@
+{
+  "FPS_TARGET": 60,
+  "FULLSCREEN": false,
+  "SIZE": {
+    "__tuple__": true,
+    "obj": [1280, 720]
+  }
+}

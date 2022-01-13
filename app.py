@@ -3,7 +3,7 @@ from pygame import init, Surface, display, event, joystick
 from pygame.time import Clock
 from pygame.constants import QUIT, FULLSCREEN
 
-from systems.settings import VIDEO_SETTINGS, KEY_MAPPING
+from systems.settings import VIDEO_SETTINGS
 
 init()
 joystick.init()
@@ -13,13 +13,13 @@ window: Surface = (
     else display.set_mode(VIDEO_SETTINGS["SIZE"])
 )
 
-from utils import get_dt, render_text, FONT_NORMAL_M, WHITE
+from utils.functions import get_dt, render_text
+from utils.fonts import FONT_NORMAL_M
+from utils.constants import WHITE
 from systems.renderer import Renderer
-from systems.input import Controller
 
 if __name__ == "__main__":
-    controller = Controller(KEY_MAPPING)
-    renderer, clock = Renderer(window, controller), Clock()
+    renderer, clock = Renderer(window), Clock()
 
     running = True
     previous_time, dt = 0, 0
@@ -33,9 +33,10 @@ if __name__ == "__main__":
         for e in event.get():
             if e.type == QUIT:
                 sys.exit()
-            controller.update(e, dt)
+            renderer.capture_events(e)
 
         renderer.update(dt)
         renderer.render()
+
         render_text(window, FONT_NORMAL_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50))
         display.flip()

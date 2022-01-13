@@ -1,101 +1,63 @@
 from __future__ import annotations
 from typing import Optional
 
+from pygame import Rect, Surface, Vector2, mouse
+from uuid import UUID, uuid4
+from pygame.constants import MOUSEBUTTONUP
 
-__all__ = ["RenderObject", "GameObject", "SelectableGuiObject", "Animatiable"]
+from pygame.event import Event
 
-from pygame import Rect, Surface
-from pygame.math import Vector2
+__all__ = ["GameObject"]
 
 
-class RenderObject:
-    def __init__(self, pos: list[int, int], sprite: Surface, **kwargs) -> None:
+class GameObject:
+    def __init__(self, pos: tuple[int, int], sprite: Surface, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.pos: list[int, int] = pos
+        self.id: UUID = uuid4()
+        self.pos: Vector2 = Vector2(pos)
         self.current_sprite: Surface = sprite
         self.size: tuple[int, int] = self.current_sprite.get_size()
         self.width: int = self.size[0]
         self.height: int = self.size[1]
+        self.rect = Rect(self.get_center(), self.size)
 
     def get_center(self) -> tuple[int, int]:
         return (self.pos[0] - self.width // 2, self.pos[1] - self.height // 2)
 
-    def change_sprite(self, sprite: Surface) -> None:
-        self.current_sprite = sprite
+    def capture_events(self, event: Event) -> None:
+        pass
+
+    def update(self, dt: Optional[float] = 0) -> None:
+        pass
 
     def render(self, context: Surface) -> None:
-        context.blit(self.current_sprite, self.pos)
+        context.blit(self.current_sprite, self.get_center())
 
 
-class SelectableGuiObject:
+class Selctable(GameObject):
     def __init__(
-        self,
-        call_back: callable,
-        default_sprite: Surface,
-        active_sprite: Surface,
-        args: Optional[list] = None,
-        **kwargs
-    ):
-        super().__init__(**kwargs)
+        self, pos: tuple[int, int], default_sprite: Surface, active_sprite: Surface, callback: callable, *args, **kwargs
+    ) -> None:
+        super().__init__(pos, default_sprite, **kwargs)
         self.default_sprite: Surface = default_sprite
         self.active_sprite: Surface = active_sprite
-        self.is_active = False
-        self.call_back = call_back
-        self.args = args
+        self.callback: callable = callback
+        self.args: tuple = args
 
-    def activate(self) -> None:
-        self.is_active = True
+    def click_handler(self, event: Event) -> None:
+        if self.is_active() and event.type == MOUSEBUTTONUP:
+            if self.args:
+                self.callback(*self.args)
+            else:
+                self.callback()
 
-    def deactivate(self) -> None:
-        self.is_active = False
+    def is_active(self) -> bool:
+        return True if self.rect.collidepoint(mouse.get_pos()) else False
 
-    def clicked(self):
-        if self.args:
-            self.call_back(*self.args)
+    def capture_events(self, event: Event) -> None:
+        self.click_handler(event)
 
-    def get_current_sprite(self) -> Surface:
-        return self.active_sprite if self.is_active else self.default_sprite
-
-    def update(self, dt: Optional[float] = None) -> None:
-        pass
-
-
-class GameObject(RenderObject):
-    def __init__(self, pos: list[int, int], sprite: Surface) -> None:
-        super().__init__(pos, sprite)
-        self.x: int = pos[0]
-        self.y: int = pos[1]
-        self.rect: Rect = self.current_sprite.get_rect()
-
-    def has_colllided(self, obj: GameObject | Vector2 | list[int, int]) -> bool:
-        if isinstance(obj, GameObject):
-            return self.rect.colliderect(obj.rect)
-        elif isinstance(obj, Vector2):
-            return self.rect.collidepoint(obj.x, obj.y)
-        elif isinstance(obj, tuple):
-            return self.rect.collidepoint(obj)
-        return False
-
-    def update(self, dt: float) -> None:
-        pass
-
-
-class Animatiable(RenderObject):
-    def __init__(self, pos: list[int, int], sprites: list[Surface]) -> None:
-        super().__init__(pos, sprites[0])
-        self.sprite_list: list[Surface] = sprites
-        self.current_index: int = 0
-        self.last_updated: float = 0
-
-    def update(self, dt: float) -> None:
-        self.last_updated += dt
-        self.current_sprite = self.sprite_list[self.current_index]
-
-    def next(self) -> None:
-        (self.current_index + 1) % len(self.sprite_list)
-
-    def prev(self) -> None:
-        (self.current_index - 1) % len(self.sprite_list)
-
-    def reset(self) -> None:
-        self.last_updated = 0
+    def update(self, dt: Optional[float] = 0) -> None:
+        active = self.is_active()
+        self.current_sprite = self.active_sprite if active else self.default_sprite
+        return active
