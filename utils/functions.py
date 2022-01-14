@@ -1,7 +1,7 @@
 from typing import Optional
 
 import time
-from pygame import Surface, image, transform
+from pygame import BLEND_RGBA_MULT, SRCALPHA, Surface, image, transform
 from pygame.font import Font
 
 from utils.paths import assetsDirs
@@ -47,7 +47,7 @@ def load_background(filename: str, *args) -> Surface:
 
 
 # rednders text to the passed in surface
-def render_text(context: Surface, font: Font, text: str, colour: tuple[int, int, int], pos: tuple[int, int]):
+def render_text(context: Surface, font: Font, text: str, colour: tuple[int, int, int], pos: tuple[int, int]) -> Surface:
     text_surface = font.render(text, True, colour)
     text_rect = text_surface.get_rect()
     text_rect.center = pos

@@ -3,14 +3,12 @@ from pygame import init, Surface, display, event, joystick
 from pygame.time import Clock
 from pygame.constants import QUIT, FULLSCREEN
 
-from systems.settings import VIDEO_SETTINGS
+from systems.settings import SETTINGS
 
 init()
 joystick.init()
 window: Surface = (
-    display.set_mode(VIDEO_SETTINGS["SIZE"], FULLSCREEN)
-    if VIDEO_SETTINGS["FULLSCREEN"]
-    else display.set_mode(VIDEO_SETTINGS["SIZE"])
+    display.set_mode(SETTINGS["SIZE"], FULLSCREEN) if SETTINGS["FULLSCREEN"] else display.set_mode(SETTINGS["SIZE"])
 )
 
 from utils.functions import get_dt, render_text
@@ -26,7 +24,7 @@ if __name__ == "__main__":
 
     while running:
 
-        clock.tick(VIDEO_SETTINGS["FPS_TARGET"])
+        clock.tick(SETTINGS["FPS_TARGET"])
         dt, previous_time = get_dt(previous_time)
         joysticks = [joystick.Joystick(x) for x in range(joystick.get_count())]
 

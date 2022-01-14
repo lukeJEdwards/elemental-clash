@@ -2,7 +2,7 @@ from typing import Optional
 
 from systems.gameObjects import Selctable
 from utils.constants import ORIGIN, characterType
-from utils.functions import load_image
+from utils.functions import load_image, load_images
 from utils.paths import assetsDirs
 
 
@@ -10,12 +10,14 @@ def load_icon(type: characterType, is_active: Optional[bool] = False):
     border_size = (256, 256)
     icon_size = (212, 212)
     border = (
-        load_image(f"{assetsDirs.UI.BORDERS}\\player-border-active.png", border_size)
+        load_image(f"{assetsDirs.UI}\\player-border-active.png", border_size)
         if is_active
-        else load_image(f"{assetsDirs.UI.BORDERS}\\player-border.png", border_size)
+        else load_image(f"{assetsDirs.UI}\\player-border.png", border_size)
     )
-    background = load_image(f"{assetsDirs.UI.BORDERS}\\player-border-background.png", border_size)
-    icon = load_image(f"{assetsDirs.ICONS}\\{type.value}.png", icon_size)
+    background, icon = load_images(
+        [f"{assetsDirs.UI}\\player-border-background.png", f"{assetsDirs.ICONS}\\{type.value}.png"],
+        (border_size, icon_size),
+    )
     background.blits(blit_sequence=((icon, (22, 22)), (border, ORIGIN)))
     return background
 

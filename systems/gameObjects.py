@@ -31,12 +31,18 @@ class GameObject:
         pass
 
     def render(self, context: Surface) -> None:
-        context.blit(self.current_sprite, self.get_center())
+        context.blit(self.current_sprite, self.rect)
 
 
 class Selctable(GameObject):
     def __init__(
-        self, pos: tuple[int, int], default_sprite: Surface, active_sprite: Surface, callback: callable, *args, **kwargs
+        self,
+        pos: tuple[int, int],
+        default_sprite: Surface,
+        active_sprite: Surface,
+        callback: Optional[callable] = lambda: print("dummy function"),
+        *args,
+        **kwargs
     ) -> None:
         super().__init__(pos, default_sprite, **kwargs)
         self.default_sprite: Surface = default_sprite
@@ -46,10 +52,7 @@ class Selctable(GameObject):
 
     def click_handler(self, event: Event) -> None:
         if self.is_active() and event.type == MOUSEBUTTONUP:
-            if self.args:
-                self.callback(*self.args)
-            else:
-                self.callback()
+            self.callback(*self.args)
 
     def is_active(self) -> bool:
         return True if self.rect.collidepoint(mouse.get_pos()) else False
@@ -57,7 +60,7 @@ class Selctable(GameObject):
     def capture_events(self, event: Event) -> None:
         self.click_handler(event)
 
-    def update(self, dt: Optional[float] = 0) -> None:
+    def update(self, dt: Optional[float] = 0) -> bool | None:
         active = self.is_active()
-        self.current_sprite = self.active_sprite if active else self.default_sprite
+        self.current_sprite = self.active_sprite if self.is_active() else self.default_sprite
         return active

@@ -10,8 +10,8 @@ from utils.constants import WHITE
 
 class MenuButton(Selctable):
     def __init__(self, pos: tuple[int, int], text: str, callback: callable, *args):
-        DEFAULT_SPRITE = scale_image_2x(load_image(f"{assetsDirs.UI.BUTTONS}\\menu-button.png"))
-        ACTIVE_SPRITE = scale_image_2x(load_image(f"{assetsDirs.UI.BUTTONS}\\menu-button-active.png"))
+        DEFAULT_SPRITE = load_image(f"{assetsDirs.UI}\\menu-button.png", (366, 76))
+        ACTIVE_SPRITE = load_image(f"{assetsDirs.UI}\\menu-button-active.png", (366, 76))
         super().__init__(list(pos), DEFAULT_SPRITE, ACTIVE_SPRITE, callback, *args)
 
         self.text: str = text

@@ -1,9 +1,10 @@
-__all__ = ["save_settings", "KEY_MAPPING", "VIDEO_SETTINGS"]
+__all__ = ["save_settings", "SETTINGS"]
 
-from utils.paths import settingsDirs, path_exists
+from utils.paths import SETTINGS_DIR, path_exists
 from utils.serializable import read_json, json_dump
 
-DEFAULT_VIDEO_SETTINGS: dict[str, bool | int | tuple[int, int]] = {
+DEFAULT_SETTINGS: dict = {
+    "NAME:": "",
     "FULLSCREEN": False,
     "FPS_TARGET": 60,
     "SIZE": (1280, 720),
@@ -18,4 +19,4 @@ def save_settings(path: str, setting_obj: dict):
     return json_dump(path, setting_obj)
 
 
-VIDEO_SETTINGS = load_settings(settingsDirs.VIDEO, DEFAULT_VIDEO_SETTINGS)
+SETTINGS = load_settings(SETTINGS_DIR, DEFAULT_SETTINGS)

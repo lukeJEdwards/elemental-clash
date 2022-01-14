@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import Enum, IntEnum
 from pygame import Surface
-from systems.settings import VIDEO_SETTINGS
+from systems.settings import SETTINGS
 from utils.functions import load_background
 
 __all__ = ["ORIGIN", "BLACK", "WHITE", "MENU_BACKGROUND"]
@@ -11,7 +11,7 @@ BLACK: tuple[int, int, int] = (0, 0, 0)
 WHITE: tuple[int, int, int] = (255, 255, 255)
 
 
-MENU_BACKGROUND: Surface = load_background("menu-background.png", VIDEO_SETTINGS["SIZE"])
+MENU_BACKGROUND: Surface = load_background("menu-background.png", SETTINGS["SIZE"])
 
 
 class characterType(Enum):
@@ -19,3 +19,11 @@ class characterType(Enum):
     WATER = "water_priestess"
     EARTH = "ground_monk"
     AIR = "wind_hashashin"
+    NONE = ""
+
+
+class characterATK(IntEnum):
+    ATK_1 = 0
+    ATK_2 = 1
+    ATK_3 = 2
+    ATK_SP = 3

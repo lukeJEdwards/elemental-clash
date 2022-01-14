@@ -7,11 +7,11 @@ from pygame.constants import SRCALPHA
 from pygame.event import Event
 
 from gui.buttons import MenuButton
+from gui.inputBox import InputBox
 from gui.characterIcon import CharacterIcon
-from systems.settings import VIDEO_SETTINGS
+from systems.settings import SETTINGS
 from systems.objectPool import ObjectPool
-from utils.constants import BLACK, ORIGIN, MENU_BACKGROUND, characterType
-from utils.functions import load_background
+from utils.constants import BLACK, ORIGIN, MENU_BACKGROUND
 
 __all__ = ["Renderer", "Screen"]
 
@@ -19,7 +19,10 @@ __all__ = ["Renderer", "Screen"]
 class Renderer:
     def __init__(self, display: Surface) -> None:
         self.display = display
-        self.render_stack: list[Screen] = [MainMenu(VIDEO_SETTINGS["SIZE"], self)]
+        self.render_stack: list[Screen] = [MainMenu(SETTINGS["SIZE"], self)]
+
+        self.capture_events: callable = lambda event: self.apply_method("capture_events", event)
+        self.update: callable = lambda dt: self.apply_method("update", dt)
 
     def append(self, screen: Screen) -> None:
         self.render_stack.append(screen)
@@ -40,12 +43,6 @@ class Renderer:
             getattr(prev_screen, method)(*args)
         getattr(top_screen, method)(*args)
 
-    def capture_events(self, event: Event) -> None:
-        self.apply_method("capture_events", event)
-
-    def update(self, dt: float) -> None:
-        self.apply_method("update", dt)
-
     def render(self) -> None:
         self.display.fill(BLACK)
         top_screen = self.get_top_screen()
@@ -56,9 +53,6 @@ class Renderer:
 
 
 class Screen:
-    def push(renderer: Renderer) -> None:
-        pass
-
     def __init__(self, size: tuple[int, int], renderer: Renderer, render_prev_screen: Optional[bool] = False) -> None:
         self.size = size
         self.width: int = size[0]
@@ -69,26 +63,28 @@ class Screen:
         self.object_pool: ObjectPool | list = []
         self.canvas: Surface = Surface(size, SRCALPHA)
 
+        self.capture_events: callable = lambda event: self.apply_method("capture_events", event)
+        self.update: callable = lambda dt: self.apply_method("update", dt)
+
     def init_pool(self, *args) -> None:
         self.object_pool = ObjectPool(*args)
 
     def set_background(self, background: Surface) -> None:
         self.background = background
 
-    def capture_events(self, event: Event) -> None:
+    def apply_method(self, method: str, *args):
         for obj in self.object_pool:
-            obj.capture_events(event)
-
-    def update(self, dt: float) -> None:
-        for obj in self.object_pool:
-            obj.update(dt)
+            getattr(obj, method)(*args)
 
     def render(self) -> Surface:
         if self.background:
             self.canvas.blit(self.background, ORIGIN)
-        for obj in self.object_pool:
-            obj.render(self.canvas)
+        self.apply_method("render", self.canvas)
         return self.canvas
+
+
+def clicked(*args):
+    print("dummy clicked method.")
 
 
 class MainMenu(Screen):
@@ -96,23 +92,12 @@ class MainMenu(Screen):
         super().__init__(size, renderer)
         self.set_background(MENU_BACKGROUND)
 
-        MARGIN = 100
-        self.init_pool(
-            MenuButton(
-                (self.width // 2, self.height // 2 - MARGIN),
-                "PLAY",
-                clicked,
-                self.renderer,
-            ),
-            MenuButton(
-                (self.width // 2, self.height // 2),
-                "SETTINGS",
-                clicked,
-                self.renderer,
-            ),
-            MenuButton((self.width // 2, self.height // 2 + MARGIN), "QUIT", exit),
-        )
+        self.init_pool(InputBox((self.width // 2, self.height // 2), "ENTER NAME"))
 
 
-def clicked(*args):
-    print("clicked")
+class CharacterSelection(Screen):
+    def __init__(self, size: tuple[int, int], renderer: Renderer):
+        super().__init__(size, renderer)
+        self.set_background(MENU_BACKGROUND)
+
+        self.init_pool()

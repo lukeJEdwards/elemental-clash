@@ -1,6 +1,6 @@
 import os
 
-__all__ = ["CWD", "path_exists", "settingsDirs", "assetsDirs"]
+__all__ = ["CWD", "path_exists", "SETTINGS_DIR", "assetsDirs"]
 
 
 def relitive_path(*paths: list[str]) -> str:
@@ -12,21 +12,9 @@ def path_exists(path: str) -> bool:
 
 
 CWD: str = os.getcwd()
-SETTINGS_FILES = os.path.join("settings")
+SETTINGS_DIR: str = os.path.join("settings.json")
 CHARACTER_FILES = os.path.join("data", "characters")
 ASSETS = os.path.join("assets")
-
-
-class settingsDirs:
-    VIDEO: str = relitive_path(SETTINGS_FILES, "video_settings.json")
-    AUDIO: str = relitive_path(SETTINGS_FILES, "audio_settings.json")
-
-
-class uiDirs:
-    BARS: str = relitive_path(ASSETS, "ui", "bars")
-    BORDERS: str = relitive_path(ASSETS, "ui", "borders")
-    BUTTONS: str = relitive_path(ASSETS, "ui", "buttons")
-    PLAYER_INPUTS: str = relitive_path(ASSETS, "ui", "player-inputs")
 
 
 class assetsDirs:
@@ -35,4 +23,4 @@ class assetsDirs:
     ICONS: str = relitive_path(ASSETS, "icons")
     SPRITES: str = relitive_path(ASSETS, "sprites")
     TILES: str = relitive_path(ASSETS, "tiles")
-    UI: uiDirs = uiDirs
+    UI: str = relitive_path(ASSETS, "ui")
