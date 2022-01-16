@@ -1,4 +1,4 @@
-from pygame import Surface
+from pygame import Rect, Surface
 from pygame.event import Event
 from systems.gameObjects import Selctable
 
@@ -25,8 +25,9 @@ class MenuButton(Selctable):
         MAX_DIST = 3
         self.last_updated += dt
 
-        if not active and self.pos != self.o_pos:
-            self.pos.update(self.o_pos)
+        if not active and self.pos.y != self.o_pos[1]:
+            self.rect.move_ip(0, self.o_pos[1] - self.pos.y)
+            self.pos.y = self.o_pos[1]
 
         if active and self.last_updated > 0.1:
             self.last_updated = 0
@@ -38,5 +39,5 @@ class MenuButton(Selctable):
             self.rect.move_ip(0, self.dist)
 
     def render(self, context: Surface) -> None:
-        render_text(self.current_sprite, FONT_NORMAL_L, self.text, WHITE, (self.width // 2, self.height // 2))
+        render_text(FONT_NORMAL_L, self.text, WHITE, (self.width // 2, self.height // 2), self.current_sprite)
         super().render(context)

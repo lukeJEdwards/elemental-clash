@@ -36,5 +36,5 @@ if __name__ == "__main__":
         renderer.update(dt)
         renderer.render()
 
-        render_text(window, FONT_NORMAL_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50))
+        render_text(FONT_NORMAL_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50), window)
         display.flip()

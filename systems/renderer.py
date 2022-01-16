@@ -12,6 +12,7 @@ from gui.characterIcon import CharacterIcon
 from systems.settings import SETTINGS
 from systems.objectPool import ObjectPool
 from utils.constants import BLACK, ORIGIN, MENU_BACKGROUND
+from utils.fonts import FONT_NORMAL_M
 
 __all__ = ["Renderer", "Screen"]
 
@@ -92,7 +93,15 @@ class MainMenu(Screen):
         super().__init__(size, renderer)
         self.set_background(MENU_BACKGROUND)
 
-        self.init_pool(InputBox((self.width // 2, self.height // 2), "ENTER NAME"))
+        MARGIN = 100
+
+        self.init_pool(
+            InputBox((self.width // 2, 100), FONT_NORMAL_M, "ENTER NAME"),
+            MenuButton((self.width // 2 - MARGIN, self.height // 2), "START SERVER", clicked),
+            MenuButton((self.width // 2 - MARGIN, self.height // 2 - MARGIN), "CONNECT", clicked),
+            MenuButton((self.width // 2 + MARGIN, self.height // 2), "SETTINGS", clicked),
+            MenuButton((self.width // 2 + MARGIN, self.height // 2 - MARGIN), "EXIT", exit),
+        )
 
 
 class CharacterSelection(Screen):

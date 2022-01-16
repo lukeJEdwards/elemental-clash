@@ -47,8 +47,16 @@ def load_background(filename: str, *args) -> Surface:
 
 
 # rednders text to the passed in surface
-def render_text(context: Surface, font: Font, text: str, colour: tuple[int, int, int], pos: tuple[int, int]) -> Surface:
+def render_text(
+    font: Font,
+    text: str,
+    colour: tuple[int, int, int],
+    pos: Optional[tuple[int, int]] = None,
+    context: Optional[Surface] = None,
+) -> Surface | None:
     text_surface = font.render(text, True, colour)
-    text_rect = text_surface.get_rect()
-    text_rect.center = pos
-    context.blit(text_surface, text_rect)
+    if context:
+        text_rect = text_surface.get_rect()
+        text_rect.center = pos
+        context.blit(text_surface, text_rect)
+    return text_surface
