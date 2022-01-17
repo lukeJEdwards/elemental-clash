@@ -1,5 +1,7 @@
 from enum import Enum, IntEnum
+
 from pygame import Surface
+
 from systems.settings import SETTINGS
 from utils.functions import load_background
 

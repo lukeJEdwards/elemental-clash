@@ -1,26 +1,22 @@
 from __future__ import annotations
 from typing import Optional
 
-from sys import exit
 from pygame import Surface
 from pygame.constants import SRCALPHA
-from pygame.event import Event
 
-from gui.buttons import MenuButton
-from gui.inputBox import InputBox
-from gui.characterIcon import CharacterIcon
-from systems.settings import SETTINGS
 from systems.objectPool import ObjectPool
-from utils.constants import BLACK, ORIGIN, MENU_BACKGROUND
-from utils.fonts import FONT_NORMAL_M
+
+from utils.constants import BLACK, ORIGIN
 
 __all__ = ["Renderer", "Screen"]
 
 
 class Renderer:
-    def __init__(self, display: Surface) -> None:
+    def __init__(self, display: Surface, inital_screen: Screen) -> None:
         self.display = display
-        self.render_stack: list[Screen] = [MainMenu(SETTINGS["SIZE"], self)]
+
+        inital_screen.set_renderer(self)
+        self.render_stack: list[Screen] = [inital_screen]
 
         self.capture_events: callable = lambda event: self.apply_method("capture_events", event)
         self.update: callable = lambda dt: self.apply_method("update", dt)
@@ -54,7 +50,9 @@ class Renderer:
 
 
 class Screen:
-    def __init__(self, size: tuple[int, int], renderer: Renderer, render_prev_screen: Optional[bool] = False) -> None:
+    def __init__(
+        self, size: tuple[int, int], renderer: Optional[Renderer], render_prev_screen: Optional[bool] = False
+    ) -> None:
         self.size = size
         self.width: int = size[0]
         self.height: int = size[1]
@@ -70,6 +68,9 @@ class Screen:
     def init_pool(self, *args) -> None:
         self.object_pool = ObjectPool(*args)
 
+    def set_renderer(self, renderer: Renderer) -> None:
+        self.renderer = renderer
+
     def set_background(self, background: Surface) -> None:
         self.background = background
 
@@ -81,32 +82,11 @@ class Screen:
         if self.background:
             self.canvas.blit(self.background, ORIGIN)
         self.apply_method("render", self.canvas)
+
+        surf = Surface((366, 76))
+        surf.fill((255, 0, 0))
+
+        self.canvas.blit(surf, (457, 458))
+        self.canvas.blit(surf, (457, 594))
+
         return self.canvas
-
-
-def clicked(*args):
-    print("dummy clicked method.")
-
-
-class MainMenu(Screen):
-    def __init__(self, size: tuple[int, int], renderer: Renderer):
-        super().__init__(size, renderer)
-        self.set_background(MENU_BACKGROUND)
-
-        MARGIN = 100
-
-        self.init_pool(
-            InputBox((self.width // 2, 100), FONT_NORMAL_M, "ENTER NAME"),
-            MenuButton((self.width // 2 - MARGIN, self.height // 2), "START SERVER", clicked),
-            MenuButton((self.width // 2 - MARGIN, self.height // 2 - MARGIN), "CONNECT", clicked),
-            MenuButton((self.width // 2 + MARGIN, self.height // 2), "SETTINGS", clicked),
-            MenuButton((self.width // 2 + MARGIN, self.height // 2 - MARGIN), "EXIT", exit),
-        )
-
-
-class CharacterSelection(Screen):
-    def __init__(self, size: tuple[int, int], renderer: Renderer):
-        super().__init__(size, renderer)
-        self.set_background(MENU_BACKGROUND)
-
-        self.init_pool()

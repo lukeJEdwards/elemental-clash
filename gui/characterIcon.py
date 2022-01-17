@@ -1,9 +1,12 @@
 from typing import Optional
 
-from systems.gameObjects import Selctable
+from systems.gameObjects import Selectable
+
 from utils.constants import ORIGIN, characterType
 from utils.functions import load_image, load_images
 from utils.paths import assetsDirs
+
+__all__ = ["CharacterIcon"]
 
 
 def load_icon(type: characterType, is_active: Optional[bool] = False):
@@ -22,7 +25,7 @@ def load_icon(type: characterType, is_active: Optional[bool] = False):
     return background
 
 
-class CharacterIcon(Selctable):
+class CharacterIcon(Selectable):
     def __init__(self, pos: tuple[int, int], character_type: characterType, callback: callable, *args) -> None:
         DEFAULT_SPRITE = load_icon(character_type)
         ACTIVE_SPRITE = load_icon(character_type, True)

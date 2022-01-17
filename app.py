@@ -11,16 +11,22 @@ window: Surface = (
     display.set_mode(SETTINGS["SIZE"], FULLSCREEN) if SETTINGS["FULLSCREEN"] else display.set_mode(SETTINGS["SIZE"])
 )
 
+
+from systems.renderer import Renderer
+from systems.screens import MainMenu
+
 from utils.functions import get_dt, render_text
 from utils.fonts import FONT_NORMAL_M
 from utils.constants import WHITE
-from systems.renderer import Renderer
+
 
 if __name__ == "__main__":
-    renderer, clock = Renderer(window), Clock()
+    renderer, clock = Renderer(window, MainMenu(SETTINGS["SIZE"])), Clock()
 
     running = True
     previous_time, dt = 0, 0
+
+    print(dt is running)
 
     while running:
 

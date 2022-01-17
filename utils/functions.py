@@ -1,7 +1,7 @@
 from typing import Optional
 
 import time
-from pygame import BLEND_RGBA_MULT, SRCALPHA, Surface, image, transform
+from pygame import Surface, image, transform
 from pygame.font import Font
 
 from utils.paths import assetsDirs

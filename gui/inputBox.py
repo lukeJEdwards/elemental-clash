@@ -3,7 +3,7 @@ from pygame.constants import MOUSEBUTTONDOWN, KEYDOWN
 from pygame.event import Event
 from pygame.font import Font
 
-from systems.gameObjects import Selctable
+from systems.gameObjects import Selectable
 
 from utils.constants import WHITE
 from utils.functions import load_image, render_text
@@ -12,7 +12,7 @@ from utils.paths import assetsDirs
 __all__ = ["InputBox"]
 
 
-class InputBox(Selctable):
+class InputBox(Selectable):
     def __init__(self, pos: tuple[int, int], font: Font, filler_text: str):
         size = (306, 48)
         DEFAULT_SPRITE = load_image(f"{assetsDirs.UI}\\text-input.png", size)

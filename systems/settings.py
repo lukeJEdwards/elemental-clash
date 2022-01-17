@@ -1,7 +1,8 @@
-__all__ = ["save_settings", "SETTINGS"]
-
 from utils.paths import SETTINGS_DIR, path_exists
 from utils.serializable import read_json, json_dump
+
+__all__ = ["save_settings", "SETTINGS"]
+
 
 DEFAULT_SETTINGS: dict = {
     "NAME:": "",
