@@ -1,46 +1,42 @@
 import sys
-from pygame import init, Surface, display, event, joystick
+from pygame import init, display, event
 from pygame.time import Clock
-from pygame.constants import QUIT, FULLSCREEN
+from pygame.constants import QUIT
 
 from systems.settings import SETTINGS
 
 init()
-joystick.init()
-window: Surface = (
-    display.set_mode(SETTINGS["SIZE"], FULLSCREEN) if SETTINGS["FULLSCREEN"] else display.set_mode(SETTINGS["SIZE"])
-)
+window = display.set_mode(SETTINGS["SIZE"])
 
-
+from systems.stateMachine import screenStateMachine
 from systems.renderer import Renderer
-from systems.screens import MainMenu
 
-from utils.functions import get_dt, render_text
-from utils.fonts import FONT_NORMAL_M
 from utils.constants import WHITE
+from utils.functions import get_dt, render_text
+from utils.fonts import FONT_LIGHT_M
 
 
 if __name__ == "__main__":
-    renderer, clock = Renderer(window, MainMenu(SETTINGS["SIZE"])), Clock()
+    screen_state = screenStateMachine()
+    renderer = Renderer(window, screen_state)
+    clock = Clock()
+
+    dt, previous_time = 0, 0
 
     running = True
-    previous_time, dt = 0, 0
-
-    print(dt is running)
 
     while running:
 
         clock.tick(SETTINGS["FPS_TARGET"])
         dt, previous_time = get_dt(previous_time)
-        joysticks = [joystick.Joystick(x) for x in range(joystick.get_count())]
 
         for e in event.get():
             if e.type == QUIT:
                 sys.exit()
-            renderer.capture_events(e)
+            screen_state.capture_events(e)
 
-        renderer.update(dt)
+        screen_state.update(dt)
+
         renderer.render()
-
-        render_text(FONT_NORMAL_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50), window)
+        render_text(FONT_LIGHT_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50), window)
         display.flip()

@@ -5,7 +5,14 @@ from pygame import Surface
 from systems.settings import SETTINGS
 from utils.functions import load_background
 
-__all__ = ["ORIGIN", "BLACK", "WHITE", "MENU_BACKGROUND"]
+__all__ = [
+    "ORIGIN",
+    "BLACK",
+    "WHITE",
+    "MENU_BACKGROUND",
+    "screenState",
+    "gameState",
+]
 
 
 ORIGIN: tuple[int, int] = (0, 0)
@@ -24,8 +31,16 @@ class characterType(Enum):
     NONE = ""
 
 
-class characterATK(IntEnum):
-    ATK_1 = 0
-    ATK_2 = 1
-    ATK_3 = 2
-    ATK_SP = 3
+class screenState(IntEnum):
+    NONE = 0
+    MAIN_MENU = 1
+    SETTINGS = 2
+    CHARACTER_SELECTION = 3
+    GAME = 4
+
+
+class gameState(IntEnum):
+    NONE = 0
+    MOVING = 1
+    ATTACKING = 2
+    DEFENDING = 3
