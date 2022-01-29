@@ -1,36 +1,26 @@
-from os import getcwd, path
+import os
 
-__all__ = ['CWD', 'settingsDirs', 'characterDirs', 'assetsDirs']
-
-def relitive_path(*paths:list[str]) -> str:  return path.join(CWD, *paths)
-
-CWD:str = getcwd()
-SETTINGS_FILES = path.join('data', 'settings')
-CHARACTER_FILES = path.join('data', 'characters')
-ASSETS = path.join('assets')
+__all__ = ["CWD", "path_exists", "SETTINGS_DIR", "assetsDirs"]
 
 
-class settingsDirs:
-    VIDEO:str = relitive_path(SETTINGS_FILES, 'video_settings.json')
-    AUDIO:str = relitive_path(SETTINGS_FILES, 'audio_settings.json')
-    KEY_MAPPING:str = relitive_path(SETTINGS_FILES, 'key_mapping.json')
+def relitive_path(*paths: list[str]) -> str:
+    return os.path.join(CWD, *paths)
 
-class characterDirs:
-    pass
 
-class uiDirs:
-    BUTTONS:str = relitive_path(ASSETS, 'ui', 'buttons')
-    CARDS:str = relitive_path(ASSETS, 'ui', 'cards')
-    GUI:str = relitive_path(ASSETS, 'ui', 'gui')
-    LEVELS:str = relitive_path(ASSETS, 'ui', 'levels')
-    PLAYER_INPUTS:str = relitive_path(ASSETS, 'ui', 'player_inputs')
-    SLIDERS:str = relitive_path(ASSETS, 'ui', 'sliders')
+def path_exists(path: str) -> bool:
+    return os.path.isfile(path)
+
+
+CWD: str = os.getcwd()
+SETTINGS_DIR: str = os.path.join("settings.json")
+CHARACTER_FILES = os.path.join("data", "characters")
+ASSETS = os.path.join("assets")
+
 
 class assetsDirs:
-    FONTS:str = relitive_path(ASSETS, 'fonts')
-    BACKGROUNDS:str = relitive_path(ASSETS, 'backgrounds')
-    UI:uiDirs = uiDirs
-    TILES:str = relitive_path(ASSETS, 'tiles')
-    SPRITES:str = relitive_path(ASSETS, 'sprites')
-    ICONS:str = relitive_path(ASSETS, 'icons')
-    
+    BACKGROUNDS: str = relitive_path(ASSETS, "backgrounds")
+    FONTS: str = relitive_path(ASSETS, "fonts")
+    ICONS: str = relitive_path(ASSETS, "icons")
+    SPRITES: str = relitive_path(ASSETS, "sprites")
+    TILES: str = relitive_path(ASSETS, "tiles")
+    UI: str = relitive_path(ASSETS, "ui")

@@ -1,44 +1,45 @@
-from pygame import init, Surface, display, event, joystick
+import sys
+from pygame import init, display, event
 from pygame.time import Clock
 from pygame.constants import QUIT
-from sys import exit
 
-from systems.settings import Settings
+from systems.settings import SETTINGS
 
 init()
-settings = Settings()
-window:Surface = display.set_mode(settings.video_settings['SIZE'])
+window = display.set_mode(SETTINGS["SIZE"])
 
-from systems.contoller import ControllerEvents
+from systems.stateMachine import SCREEN_STATE
+
+from utils.constants import WHITE
+from utils.functions import get_dt, render_text
+from utils.fonts import FONT_LIGHT_M
+
 from systems.renderer import Renderer
-from screens import TitleScreen
-from utils.functions import get_dt
+from screens import MainMenuScreen
 
 
-def setup() -> tuple[Clock, Renderer, TitleScreen]:
-    joystick.init()
-    title_screen:TitleScreen = TitleScreen(settings.video_settings['SIZE'])
-    renderer:Renderer = Renderer(window, title_screen)
-    return Clock(), renderer, title_screen
+if __name__ == "__main__":
+    renderer = Renderer(window)
+    clock = Clock()
 
+    dt, previous_time = 0, 0
 
-if __name__ == '__main__':
-    control_input = ControllerEvents(settings.key_mapping)
-    clock, renderer, title_screen = setup()
-    prev_time = 0
     running = True
-    
+
+    SCREEN_STATE.change_state(MainMenuScreen(SETTINGS["SIZE"]))
+
     while running:
-        clock.tick(settings.video_settings['FPS_TARGET'])
-        joysticks = [joystick.Joystick(x) for x in range(joystick.get_count())]
+
+        clock.tick(SETTINGS["FPS_TARGET"])
+        dt, previous_time = get_dt(previous_time)
+
         for e in event.get():
-            if e.type == QUIT: exit()
-            
-            control_input.update(e)
-            
-        dt, prev_time = get_dt(prev_time)
-        title_screen.update(control_input.actions, dt)
+            if e.type == QUIT:
+                sys.exit()
+            SCREEN_STATE.capture_events(e)
+
+        SCREEN_STATE.update(dt)
+
         renderer.render()
+        render_text(FONT_LIGHT_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50), window)
         display.flip()
-            
-    
