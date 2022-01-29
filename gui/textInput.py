@@ -2,7 +2,7 @@ from email.policy import default
 from pygame import K_BACKSPACE, K_RETURN, KEYDOWN, MOUSEBUTTONDOWN, Surface
 from pygame.event import Event
 
-from components.objects import GuiInteractable
+from components.Objects import GuiInteractable
 from utils.constants import WHITE
 
 from utils.fonts import FONT_LIGHT_M

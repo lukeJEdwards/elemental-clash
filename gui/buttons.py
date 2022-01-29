@@ -1,7 +1,7 @@
 from pygame import Surface
 from pygame.event import Event
 
-from components.objects import GuiInteractable
+from components.Objects import GuiInteractable
 
 from utils.constants import WHITE
 from utils.fonts import FONT_NORMAL_L

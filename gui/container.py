@@ -2,7 +2,7 @@ from __future__ import annotations
 from re import T
 from typing import Iterable
 
-from components.objects import GuiInteractable, GuiObject
+from components.Objects import GuiInteractable, GuiObject
 from utils.functions import apply_method
 
 
