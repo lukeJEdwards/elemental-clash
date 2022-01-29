@@ -5,6 +5,8 @@ SETTINGS = {
     "NAME": "",
     "SFX_LEVEL": 50,
     "SIZE": (1280, 720),
+    "NAME": "",
+    "IP": "",
 }
 
 

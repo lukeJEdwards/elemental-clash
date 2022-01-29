@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Iterable
 
 import time
 from pygame import Surface, image, transform
@@ -7,7 +7,16 @@ from pygame.font import Font
 from utils.paths import assetsDirs
 
 
-__all__ = ["get_dt", "scale_image_2x", "scale_image", "load_image", "load_images", "load_background", "render_text"]
+__all__ = [
+    "get_dt",
+    "scale_image_2x",
+    "scale_image",
+    "load_image",
+    "load_images",
+    "load_background",
+    "render_text",
+    "apply_method",
+]
 
 
 # get delta time (change in time from last time being called)
@@ -60,3 +69,12 @@ def render_text(
         text_rect.center = pos
         context.blit(text_surface, text_rect)
     return text_surface
+
+
+# trys to to call method from object
+def apply_method(__iterator: Iterable, method: str, *args):
+    for __obj in __iterator:
+        try:
+            getattr(__obj, method)(*args)
+        except AttributeError:
+            continue

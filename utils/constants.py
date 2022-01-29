@@ -1,18 +1,11 @@
-from enum import Enum, IntEnum
+from enum import Enum
 
 from pygame import Surface
 
 from systems.settings import SETTINGS
 from utils.functions import load_background
 
-__all__ = [
-    "ORIGIN",
-    "BLACK",
-    "WHITE",
-    "MENU_BACKGROUND",
-    "screenState",
-    "gameState",
-]
+__all__ = ["ORIGIN", "BLACK", "WHITE", "MENU_BACKGROUND"]
 
 
 ORIGIN: tuple[int, int] = (0, 0)
@@ -29,18 +22,3 @@ class characterType(Enum):
     EARTH = "ground_monk"
     AIR = "wind_hashashin"
     NONE = ""
-
-
-class screenState(IntEnum):
-    NONE = 0
-    MAIN_MENU = 1
-    SETTINGS = 2
-    CHARACTER_SELECTION = 3
-    GAME = 4
-
-
-class gameState(IntEnum):
-    NONE = 0
-    MOVING = 1
-    ATTACKING = 2
-    DEFENDING = 3

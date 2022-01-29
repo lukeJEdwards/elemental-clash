@@ -8,22 +8,25 @@ from systems.settings import SETTINGS
 init()
 window = display.set_mode(SETTINGS["SIZE"])
 
-from systems.stateMachine import screenStateMachine
-from systems.renderer import Renderer
+from systems.stateMachine import SCREEN_STATE
 
 from utils.constants import WHITE
 from utils.functions import get_dt, render_text
 from utils.fonts import FONT_LIGHT_M
 
+from systems.renderer import Renderer
+from screens import MainMenuScreen
+
 
 if __name__ == "__main__":
-    screen_state = screenStateMachine()
-    renderer = Renderer(window, screen_state)
+    renderer = Renderer(window)
     clock = Clock()
 
     dt, previous_time = 0, 0
 
     running = True
+
+    SCREEN_STATE.change_state(MainMenuScreen(SETTINGS["SIZE"]))
 
     while running:
 
@@ -33,9 +36,9 @@ if __name__ == "__main__":
         for e in event.get():
             if e.type == QUIT:
                 sys.exit()
-            screen_state.capture_events(e)
+            SCREEN_STATE.capture_events(e)
 
-        screen_state.update(dt)
+        SCREEN_STATE.update(dt)
 
         renderer.render()
         render_text(FONT_LIGHT_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50), window)

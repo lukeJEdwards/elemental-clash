@@ -1,6 +1,6 @@
 from typing import Optional
 from pygame import Surface
-
+from components.objectPools import objectPool
 from utils.constants import ORIGIN
 
 
@@ -13,15 +13,17 @@ class Screen:
         render_previous: Optional[bool] = False,
     ) -> None:
         self.size: tuple[int, int] = size
-        self.pos = pos
         self.width: int = size[0]
         self.height: int = size[1]
-        self.render_previous: bool = render_previous
         self.background: Surface = background
-        self.last_updated = 0
+        self.pos: tuple[int, int] = pos
+        self.render_previous: bool = render_previous
+        self.canvas: Surface = Surface(size)
+        self._object_pool = objectPool()
 
-    def update(self, dt: float) -> None:
-        self.last_updated += dt
+    def set_pool(self, pool: objectPool) -> None:
+        self.object_pool = pool
 
-    def render(self):
-        return self.background
+    def render(self) -> Surface:
+        self.canvas.blit(self.background, ORIGIN)
+        return self.canvas
