@@ -1,9 +1,14 @@
 from __future__ import annotations
 from typing import Optional
 from uuid import uuid4
+from os import listdir
 
 from pygame import MOUSEBUTTONDOWN, Rect, Surface, Vector2, mouse
 from pygame.event import Event
+
+from utils.constants import characterType, characterState
+from utils.functions import load_images
+from utils.paths import assetsDirs
 
 
 def get_center(pos: tuple[int, int], size: tuple[int, int]) -> tuple[int, int]:
@@ -22,25 +27,6 @@ class RenderObject:
 
     def __str__(self) -> str:
         return f"pos:{self.pos}\nsize:{self.size}\n"
-
-
-class GameObject(RenderObject):
-    def __init__(self, pos: tuple[int, int], sprite: Surface, **kwargs) -> None:
-        super().__init__(pos, sprite, **kwargs)
-        self.rect: Rect = Rect(self.pos, self.size)
-
-    def check_collision(self, rect: Rect) -> bool:
-        return self.rect.colliderect(rect)
-
-    def update(self, dt: float) -> None:
-        pass
-
-    def capture_events(self, event: Event) -> None:
-        pass
-
-    def __str__(self) -> str:
-        return super().__str__() + f"{self.rect}\n"
-
 
 class GuiObject(RenderObject):
     def __init__(self, pos: tuple[int, int], sprite: Surface, **kwargs):
@@ -81,3 +67,44 @@ class GuiInteractable(GuiObject):
 
     def __str__(self) -> str:
         return super().__str__() + f"{self.rect}\n"
+
+class CharacterObject(RenderObject):
+    def __init__(self, character_type:characterType, **kwargs) -> None:
+        super().__init__(**kwargs)
+
+        self.rect = Rect(self.size, self.pos)
+
+        self.character_type:characterType = character_type
+        self.sprites:dict[characterState, tuple[Surface, ...]] = self.load_moves()
+
+        self.last_updated:float = 0
+        self.current_index:int = 0
+        self.current_state:characterState = characterState.IDLE
+        self.current_sprite:Surface = self.ge_current_state()[0]
+
+    def load_sprites(self, dirname:str) -> tuple[Surface, ...]:
+        return load_images(listdir(dirname))
+
+    def load_moves(self) -> dict[characterState, tuple[Surface, ...]]:
+        dirs = listdir(f'{assetsDirs.CHARACTER_FILES}\\{self.character_type.value}')
+        return {characterState(dir):self.get_sprites(dir) for dir in dirs}
+
+    def get_current_state(self) -> tuple[Surface, ...]:
+        return self.sprites[self.currrent_state]
+
+    def change_state(self, state:characterState) -> None:
+        self.currrent_state = state
+        self.current_index = 0
+
+    def next(self) -> None:
+        self.current_index = (self.current_index + 1) % len(self.get_current_state())
+
+    def capture_events(self, event:Event) -> None:
+        pass
+
+    def update(self, dt:float) -> None:
+        self.last_updated += dt
+
+        if self.last_updated > 0.1:
+            self.last_updated =0
+            self.next()

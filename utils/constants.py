@@ -22,3 +22,18 @@ class characterType(Enum):
     EARTH = "ground_monk"
     AIR = "wind_hashashin"
     NONE = ""
+
+class characterState(Enum):
+    ATK_1 = "1_atk"
+    ATK_2 = "1_atk"
+    ATK_3 = "3_atk"
+    ATK_SP = "sp_atk"
+    DEATH = "death",
+    DEFEND = "defend",
+    IDLE = "idle",
+    JUMP = "jump",
+    ROLL = "roll",
+    RUN = "run",
+    TAKE_HIT = "take_hit",
+    MEDITATE = "meditate",
+    HEAL = "heal",

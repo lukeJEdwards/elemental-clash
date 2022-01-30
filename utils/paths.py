@@ -19,8 +19,7 @@ ASSETS = os.path.join("assets")
 
 class assetsDirs:
     BACKGROUNDS: str = relitive_path(ASSETS, "backgrounds")
+    CHARACTER_FILES:str = relitive_path(ASSETS, "characters")
     FONTS: str = relitive_path(ASSETS, "fonts")
     ICONS: str = relitive_path(ASSETS, "icons")
-    SPRITES: str = relitive_path(ASSETS, "sprites")
-    TILES: str = relitive_path(ASSETS, "tiles")
     UI: str = relitive_path(ASSETS, "ui")

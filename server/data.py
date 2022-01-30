@@ -1,4 +1,4 @@
-from utils.constants import characterATK, characterType
+from utils.constants import characterType
 
 
 PLAYER_1 = {
@@ -14,29 +14,3 @@ PLAYER_2 = {
 }
 
 
-ATKS = {
-    characterType.FIRE: {
-        characterATK.ATK_1: 0,
-        characterATK.ATK_2: 0,
-        characterATK.ATK_3: 0,
-        characterATK.ATK_SP: 0,
-    },
-    characterType.EARTH: {
-        characterATK.ATK_1: 0,
-        characterATK.ATK_2: 0,
-        characterATK.ATK_3: 0,
-        characterATK.ATK_SP: 0,
-    },
-    characterType.WATER: {
-        characterATK.ATK_1: 0,
-        characterATK.ATK_2: 0,
-        characterATK.ATK_3: 0,
-        characterATK.ATK_SP: 0,
-    },
-    characterType.AIR: {
-        characterATK.ATK_1: 0,
-        characterATK.ATK_2: 0,
-        characterATK.ATK_3: 0,
-        characterATK.ATK_SP: 0,
-    },
-}

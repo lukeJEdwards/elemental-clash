@@ -43,7 +43,7 @@ def load_image(filename: str, scale: Optional[tuple[int, int]] = None) -> Surfac
 
 # loads mutiple images at once
 def load_images(
-    filenames: list[str] | tuple[str], scales: Optional[tuple[tuple[int, int], ...]] = None
+    filenames: Iterable[str], scales: Optional[tuple[int, int]] = None
 ) -> tuple[Surface, ...]:
     if scales == None:
         scales = tuple([None for x in range(len(filenames))])

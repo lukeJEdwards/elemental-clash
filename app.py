@@ -8,12 +8,12 @@ from systems.settings import SETTINGS
 init()
 window = display.set_mode(SETTINGS["SIZE"])
 
-from systems.stateMachine import SCREEN_STATE
 
-from utils.constants import WHITE
+from utils.constants import WHITE, characterType
 from utils.functions import get_dt, render_text
 from utils.fonts import FONT_LIGHT_M
 
+from systems.stateMachine import SCREEN_STATE
 from systems.renderer import Renderer
 from screens import MainMenuScreen
 

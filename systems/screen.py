@@ -19,10 +19,6 @@ class Screen:
         self.pos: tuple[int, int] = pos
         self.render_previous: bool = render_previous
         self.canvas: Surface = Surface(size)
-        self._object_pool = objectPool()
-
-    def set_pool(self, pool: objectPool) -> None:
-        self.object_pool = pool
 
     def render(self) -> Surface:
         self.canvas.blit(self.background, ORIGIN)

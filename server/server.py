@@ -1,7 +1,8 @@
 import socket
 from _thread import *
 
-__all__ = ["Server"]
+__all__ = ["Server", "PORT"]
+PORT = 5555
 
 
 def get_ip():
@@ -21,7 +22,7 @@ class Server:
     def __init__(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.SERVER = get_ip()
-        self.PORT = 555
+        self.PORT = PORT
         self.running = True
         self.current_id = "0"
         try:

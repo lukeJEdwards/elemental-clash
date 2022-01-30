@@ -6,12 +6,10 @@ from utils.functions import apply_method
 
 class stateMachine:
     def __init__(self):
-        self._current_state: Screen = None
-        self._previous_state: Screen = None
-        self._previous_pool = objectPool()
+        self._current_state = None
         self._current_pool = objectPool()
 
-    def change_state(self, state: Screen):
+    def change_state(self, state):
         self._currentState = state
 
     def get_state(self) -> Screen:
@@ -21,6 +19,9 @@ class stateMachine:
 class screenStateMachine(stateMachine):
     def __init__(self):
         super().__init__()
+
+        self._previous_state: Screen = None
+        self._previous_pool = objectPool()
 
         self.update: callable = lambda dt: self.__apply_method("update", dt)
         self.capture_events: callable = lambda event: self.__apply_method("capture_events", event)
