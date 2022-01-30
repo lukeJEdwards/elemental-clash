@@ -1,6 +1,5 @@
 from pygame import Surface
 
-from systems.settings import SETTINGS
 from systems.stateMachine import SCREEN_STATE
 from utils.functions import apply_method
 
@@ -8,7 +7,6 @@ from utils.functions import apply_method
 class Renderer:
     def __init__(self, window: Surface) -> None:
         self._window: Surface = window
-        self._size: tuple[int, int] = SETTINGS["SIZE"]
 
     def render(self) -> None:
         current_screen = SCREEN_STATE.get_state()
@@ -20,3 +18,4 @@ class Renderer:
 
         self._window.blit(current_screen.render(), current_screen.pos)
         apply_method(SCREEN_STATE._current_pool, "render", self._window)
+        apply_method(SCREEN_STATE._notification_pool, "render", self._window)

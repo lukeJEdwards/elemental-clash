@@ -20,6 +20,9 @@ class Screen:
         self.render_previous: bool = render_previous
         self.canvas: Surface = Surface(size)
 
+    def fill_pool(self) -> None:
+        pass
+
     def render(self) -> Surface:
         self.canvas.blit(self.background, ORIGIN)
         return self.canvas

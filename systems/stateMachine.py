@@ -4,21 +4,17 @@ from systems.screen import Screen
 from utils.functions import apply_method
 
 
-class stateMachine:
+class gameState:
+    def __init__(self) -> None:
+        self._started_server: bool = False
+        self._connected: bool = False
+
+
+class screenStateMachine:
     def __init__(self):
         self._current_state = None
         self._current_pool = objectPool()
-
-    def change_state(self, state):
-        self._currentState = state
-
-    def get_state(self) -> Screen:
-        return self._currentState
-
-
-class screenStateMachine(stateMachine):
-    def __init__(self):
-        super().__init__()
+        self._notification_pool = objectPool()
 
         self._previous_state: Screen = None
         self._previous_pool = objectPool()
@@ -30,6 +26,7 @@ class screenStateMachine(stateMachine):
         if self._current_state.render_previous:
             apply_method(self._previous_pool, method, *args)
         apply_method(self._current_pool, method, *args)
+        apply_method(self._notification_pool, method, *args)
 
     def get_state(self) -> Screen:
         return self._current_state
@@ -42,7 +39,10 @@ class screenStateMachine(stateMachine):
         self._previous_pool.clear()
         self._previous_pool.update(self._current_pool)
 
+        self._current_pool.clear()
         self._current_state = state
+        self._current_state.fill_pool()
 
 
 SCREEN_STATE: screenStateMachine = screenStateMachine()
+GAME_STATE: gameState = gameState()

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pygame import Surface
 from pygame.event import Event
 
@@ -11,7 +13,7 @@ from utils.functions import load_images, render_text
 
 class MainMenuButton(GuiInteractable):
     def __init__(
-        self, pos: tuple[int, int], text: str, call_back: callable = lambda: print("clicked"), **kwargs
+        self, pos: tuple[int, int], text: str, call_back: Optional[callable] = lambda: print("clicked"), **kwargs
     ) -> None:
         DEFAULT_SPRITE, ACTIVE_SPRITE = load_images(
             [f"{assetsDirs.UI}\\menu-button.png", f"{assetsDirs.UI}\\menu-button-active.png"],

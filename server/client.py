@@ -1,27 +1,31 @@
 import socket
-from server.server import PORT
+from typing import Optional
+from server.server import PORT, IP
 
-__all__ = ["networkClient"]
+__all__ = ["CLIENT"]
 
 
 class networkClient:
     def __init__(self):
         self.client: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host: str = "localhost"
-        self.port: int = PORT
-        self.id = self.connect()
 
-    def get_address(self) -> tuple[str, int]:
-        return (self.host, self.port)
+    def get_address(self, host: str) -> tuple[str, int]:
+        return (host, PORT)
 
-    def connect(self):
-        self.client.connect(self.get_address())
-        return self.client.recv(2048).decode()
+    def connect(self, host: Optional[str] = IP) -> str | None:
+        try:
+            self.client.connect(self.get_address(host))
+            self.id = self.client.recv(2048).decode()
+        except socket.error:
+            return f"{host}:{PORT} failed"
 
-    def send(self, data):
+    def send(self, data) -> str:
         try:
             self.client.send(str.encode(data))
             reply = self.client.recv(2048).decode()
             return reply
         except socket.error as e:
             return str(e)
+
+
+CLIENT: networkClient = networkClient()

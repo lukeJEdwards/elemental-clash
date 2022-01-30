@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterator, Iterable
+from typing import Iterator, Iterable, SupportsIndex
 from uuid import UUID
 
 from components.Objects import RenderObject
@@ -19,7 +19,22 @@ class objectPool:
             for obj in __obj:
                 self.append(obj)
 
+    def pop(self, __index: SupportsIndex = None) -> RenderObject:
+        self._len -= 1
+
+        if __index and __index < self._len - 1:
+            __key = self._keys.pop(__index)
+        elif __index and __index > self._len - 1:
+            raise IndexError("Indx out of bounds")
+        else:
+            __key = self._keys.pop()
+
+        __obj = self._pool[__key]
+        del self._pool[__key]
+        return __obj
+
     def clear(self) -> None:
+        self._len = 0
         self._pool.clear()
         self._keys.clear()
 

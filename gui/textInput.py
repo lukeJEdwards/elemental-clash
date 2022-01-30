@@ -1,10 +1,11 @@
-from email.policy import default
 from pygame import K_BACKSPACE, K_RETURN, KEYDOWN, MOUSEBUTTONDOWN, Surface
 from pygame.event import Event
 
 from components.Objects import GuiInteractable
-from utils.constants import WHITE
 
+from systems.settings import SETTINGS
+
+from utils.constants import WHITE
 from utils.fonts import FONT_LIGHT_M
 from utils.functions import load_images, render_text
 from utils.paths import assetsDirs
@@ -19,7 +20,8 @@ class TextInput(GuiInteractable):
         super().__init__(pos=pos, sprite=DEFAULT_SPRITE, active_sprite=ACTIVE_SPRITE, **kwargs)
 
         self._filler_text: str = filler_text
-        self._text: str = default_txt
+        self._default_txt: str = default_txt
+        self._text: str = SETTINGS[default_txt] if default_txt else default_txt
         self.active = False
 
     def update(self, dt: float) -> None:
@@ -36,6 +38,7 @@ class TextInput(GuiInteractable):
                 self.active = False
             else:
                 self._text += event.unicode
+            SETTINGS[self._default_txt] = self._text
 
     def render(self, context: Surface) -> None:
         super().render(context)
