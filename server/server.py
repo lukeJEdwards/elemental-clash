@@ -1,8 +1,6 @@
 import socket
 
-from _thread import start_new_thread
 from threading import Thread
-
 from systems.stateMachine import GAME_STATE
 
 
@@ -26,11 +24,6 @@ class Server:
         self.PORT = PORT
         self.current_id = "0"
 
-    def shutdown(self):
-        self.server.shutdown(socket.SHUT_RDWR)
-        self.server.close()
-        print("---Server closed---")
-
     def run_server(self):
         try:
             self.server.bind((self.SERVER, self.PORT))
@@ -43,7 +36,15 @@ class Server:
         while GAME_STATE._server_running:
             conn, addr = self.server.accept()
             print("Connection accepted: ", addr)
-            start_new_thread(self.threaded_client, (conn,))
+            connetion = Thread(target=self.threaded_client, args=(conn,))
+            connetion.start()
+            connetion.join()
+
+        print("---Server closed---")
+        self.server.close()
+
+        self.current_id = "0"
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def threaded_client(self, conn: socket.socket):
         conn.send(str.encode(f"{self.current_id}, {self.SERVER}"))

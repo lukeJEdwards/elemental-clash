@@ -16,7 +16,7 @@ def exit_server():
     CLIENT.disconnect()
 
     if GAME_STATE._server_running:
-        SERVER.shutdown()
+        GAME_STATE._server_running = False
 
 
 class CharacterSelectionScreen(Screen):

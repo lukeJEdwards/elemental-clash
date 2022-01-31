@@ -21,6 +21,7 @@ class networkClient:
 
     def disconnect(self):
         self.client.close()
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def send(self, data) -> str:
         try:
@@ -28,6 +29,7 @@ class networkClient:
             reply = self.client.recv(2048).decode()
             return reply
         except socket.error as e:
+            print(str(e))
             self.client.close()
 
 

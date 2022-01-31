@@ -44,6 +44,7 @@ def connect_to_sever():
             SCREEN_STATE._notification_pool.append(Notification("Connection failed", notificationType.ERROR))
         else:
             SCREEN_STATE.change_state(CharacterSelectionScreen(SETTINGS["SIZE"]))
+            SCREEN_STATE._notification_pool.append(Notification("Connection successful", notificationType.SUCCESS))
 
 
 class MainMenuScreen(Screen):
