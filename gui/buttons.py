@@ -1,9 +1,12 @@
+from json import load
 from typing import Optional
+from unittest.mock import DEFAULT, call
 
 from pygame import Surface
 from pygame.event import Event
 
 from components.Objects import GuiInteractable
+from systems.stateMachine import GAME_STATE, SCREEN_STATE
 
 from utils.constants import WHITE
 from utils.fonts import FONT_NORMAL_L
@@ -53,8 +56,44 @@ class MainMenuButton(GuiInteractable):
             self.call_back()
 
     def render(self, context: Surface) -> None:
-        render_text(FONT_NORMAL_L, self.text, WHITE, (self.size[0] // 2, self.size[1] // 2), self.currrent_sprite)
+        render_text(FONT_NORMAL_L, self.text, WHITE, (self.size[0] // 2, self.size[1] // 2 + 4), self.currrent_sprite)
         super().render(context)
 
     def __str__(self) -> str:
         return super().__str__()
+
+
+class ReadyButton(GuiInteractable):
+    def __init__(self, pos: tuple[int, int], **kwargs):
+        DEFAULT_SPRITE, ACTIVE_SPRITE = load_images(
+            [f"{assetsDirs.UI}\\menu-button.png", f"{assetsDirs.UI}\\menu-button-active.png"],
+            ((336, 76), (336, 76)),
+        )
+        super().__init__(pos, DEFAULT_SPRITE, ACTIVE_SPRITE, **kwargs)
+
+    def update(self, dt: Optional[float] = 0) -> None:
+        self.currrent_sprite = self.active_sprite if GAME_STATE._player_data["1"]["ready"] else self.default_sprite
+
+    def capture_events(self, event: Event) -> None:
+        if self.is_clicked(event):
+            GAME_STATE._player_data["1"]["ready"] = not GAME_STATE._player_data["1"]["ready"]
+
+    def render(self, context: Surface) -> None:
+        render_text(FONT_NORMAL_L, "READY", WHITE, (self.size[0] // 2, self.size[1] // 2 + 4), self.currrent_sprite)
+        super().render(context)
+
+
+class BackButton(GuiInteractable):
+    def __init__(self, pos: tuple[int, int], call_back: callable, **kwargs) -> None:
+        DEFAULT_SPRITE, ACTIVE_SPRITE = load_images(
+            [f"{assetsDirs.UI}\\back-button.png", f"{assetsDirs.UI}\\back-button-active.png"],
+            ((128, 128), (128, 128)),
+        )
+        super().__init__(pos, DEFAULT_SPRITE, ACTIVE_SPRITE, **kwargs)
+
+        self.call_back: callable = call_back
+
+    def capture_events(self, event: Event) -> None:
+        if self.is_clicked(event):
+            self.call_back()
+            SCREEN_STATE.back()

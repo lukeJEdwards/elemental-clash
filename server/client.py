@@ -19,13 +19,16 @@ class networkClient:
         except socket.error:
             return f"{host}:{PORT} failed"
 
+    def disconnect(self):
+        self.client.close()
+
     def send(self, data) -> str:
         try:
             self.client.send(str.encode(data))
             reply = self.client.recv(2048).decode()
             return reply
         except socket.error as e:
-            return str(e)
+            self.client.close()
 
 
 CLIENT: networkClient = networkClient()

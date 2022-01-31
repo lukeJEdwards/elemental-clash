@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Iterable, Optional
 from pygame import Surface
-from components.objectPools import objectPool
+from components.Objects import RenderObject
 from utils.constants import ORIGIN
 
 
@@ -20,7 +20,7 @@ class Screen:
         self.render_previous: bool = render_previous
         self.canvas: Surface = Surface(size)
 
-    def fill_pool(self) -> None:
+    def fill_pool(self) -> Iterable | RenderObject:
         pass
 
     def render(self) -> Surface:

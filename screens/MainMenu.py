@@ -1,4 +1,7 @@
+from typing import Iterable
 from _thread import start_new_thread
+
+from components.Objects import RenderObject
 
 from gui.buttons import MainMenuButton
 from gui.container import GuiContainer
@@ -21,14 +24,14 @@ def start_sever():
     if not SETTINGS["NAME"]:
         SCREEN_STATE._notification_pool.append(Notification("Please enter a name", notificationType.ALERT))
     else:
+        GAME_STATE._server_running = True
         start_new_thread(SERVER.run_server, ())
+
         failed_connection = CLIENT.connect()
         SETTINGS["IP"] = SERVER.SERVER
-
         if failed_connection:
             SCREEN_STATE._notification_pool.append(Notification("Connection failed", notificationType.ERROR))
         else:
-            GAME_STATE._started_server = True
             SCREEN_STATE.change_state(CharacterSelectionScreen(SETTINGS["SIZE"]))
 
 
@@ -38,7 +41,7 @@ def connect_to_sever():
     else:
         failed_connection = CLIENT.connect(SETTINGS["IP"])
         if failed_connection:
-            pass
+            SCREEN_STATE._notification_pool.append(Notification("Connection failed", notificationType.ERROR))
         else:
             SCREEN_STATE.change_state(CharacterSelectionScreen(SETTINGS["SIZE"]))
 
@@ -47,21 +50,19 @@ class MainMenuScreen(Screen):
     def __init__(self, size: tuple[int, int]):
         super().__init__(size, MENU_BACKGROUND)
 
-    def fill_pool(self) -> None:
-        SCREEN_STATE._current_pool.append(
-            [
-                GuiContainer(
-                    (312, 242),
-                    60,
-                    (MainMenuButton, "START SERVER", start_sever),
-                    (MainMenuButton, "CONNECT", connect_to_sever),
-                    (MainMenuButton, "EXIT", exit),
-                ),
-                GuiContainer(
-                    (797, 341),
-                    60,
-                    (TextInput, "ENTER NAME", "NAME"),
-                    (TextInput, "ENTER IP", "IP"),
-                ),
-            ]
-        )
+    def fill_pool(self) -> Iterable | RenderObject:
+        return [
+            GuiContainer(
+                (312, 242),
+                60,
+                (MainMenuButton, "START SERVER", start_sever),
+                (MainMenuButton, "CONNECT", connect_to_sever),
+                (MainMenuButton, "EXIT", exit),
+            ),
+            GuiContainer(
+                (797, 341),
+                60,
+                (TextInput, "ENTER NAME", "NAME"),
+                (TextInput, "ENTER IP", "IP"),
+            ),
+        ]

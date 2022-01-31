@@ -9,7 +9,7 @@ init()
 window = display.set_mode(SETTINGS["SIZE"])
 
 
-from utils.constants import WHITE, characterType
+from utils.constants import WHITE
 from utils.functions import get_dt, render_text
 from utils.fonts import FONT_LIGHT_M
 
@@ -43,3 +43,11 @@ if __name__ == "__main__":
         renderer.render()
         render_text(FONT_LIGHT_M, "{:.2}".format(str(clock.get_fps())), WHITE, (50, 50), window)
         display.flip()
+
+
+# make icons, use canvas to change out each icon
+# need ready button
+# test for second user still needed
+# create game screen
+# create character class
+# need animations and collision detection

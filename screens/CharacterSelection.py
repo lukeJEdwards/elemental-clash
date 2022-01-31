@@ -1,12 +1,22 @@
-from gui.characterIcons import CharacterIcon
+from gui.buttons import BackButton, ReadyButton
+from gui.characterIcons import CharacterIcon, ChosenCharacterIcon
 from gui.container import GuiContainer
+from gui.textInput import TextInput
+from server import SERVER, CLIENT
 
 from systems.screen import Screen
-from systems.stateMachine import SCREEN_STATE
+from systems.stateMachine import GAME_STATE, SCREEN_STATE
 
 from utils.constants import MENU_BACKGROUND, characterType
 
 __all__ = ["CharacterSelectionScreen"]
+
+
+def exit_server():
+    CLIENT.disconnect()
+
+    if GAME_STATE._server_running:
+        SERVER.shutdown()
 
 
 class CharacterSelectionScreen(Screen):
@@ -30,5 +40,21 @@ class CharacterSelectionScreen(Screen):
                     (CharacterIcon, characterType.AIR),
                     horizontal=True,
                 ),
+                GuiContainer(
+                    (704, 226),
+                    15,
+                    (TextInput, "", GAME_STATE._player_data["1"]["name"], True),
+                    (ChosenCharacterIcon, "1"),
+                    horizontal=True,
+                ),
+                GuiContainer(
+                    (704, 429),
+                    15,
+                    (TextInput, "", GAME_STATE._player_data["2"]["name"], True),
+                    (ChosenCharacterIcon, "2"),
+                    horizontal=True,
+                ),
+                ReadyButton((724, 585)),
+                BackButton((20, 20), exit_server),
             ]
         )

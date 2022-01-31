@@ -1,3 +1,4 @@
+from typing import Optional
 from pygame import K_BACKSPACE, K_RETURN, KEYDOWN, MOUSEBUTTONDOWN, Surface
 from pygame.event import Event
 
@@ -12,7 +13,14 @@ from utils.paths import assetsDirs
 
 
 class TextInput(GuiInteractable):
-    def __init__(self, pos: tuple[int, int], filler_text: str, default_txt: str = "", **kwargs):
+    def __init__(
+        self,
+        pos: tuple[int, int],
+        filler_text: Optional[str] = "",
+        default_txt: Optional[str] = "",
+        disabled: Optional[bool] = False,
+        **kwargs,
+    ):
         DEFAULT_SPRITE, ACTIVE_SPRITE = load_images(
             [f"{assetsDirs.UI}\\text-input.png", f"{assetsDirs.UI}\\text-input-active.png"],
             ((306, 48), (306, 48)),
@@ -21,17 +29,18 @@ class TextInput(GuiInteractable):
 
         self._filler_text: str = filler_text
         self._default_txt: str = default_txt
-        self._text: str = SETTINGS[default_txt] if default_txt else default_txt
+        self._text: str = default_txt
+        self.disabled: bool = disabled
         self.active = False
 
     def update(self, dt: float) -> None:
-        self.currrent_sprite = self.active_sprite if self.active else self.default_sprite
+        self.currrent_sprite = self.active_sprite if self.active or self.disabled else self.default_sprite
 
     def capture_events(self, event: Event) -> None:
         if event.type == MOUSEBUTTONDOWN:
             self.active = self.is_mouse_hovering()
 
-        if self.active and event.type == KEYDOWN:
+        if self.active and event.type == KEYDOWN and not self.disabled:
             if event.key == K_BACKSPACE:
                 self._text = self._text[:-1]
             elif event.key == K_RETURN:
