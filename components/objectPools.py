@@ -1,50 +1,45 @@
 from __future__ import annotations
-from typing import Iterator, Iterable, SupportsIndex
+from typing import Iterator, Iterable
 from uuid import UUID
 
-from components.Objects import RenderObject
+from components.objects import RenderObject
 
 
 class objectPool:
-    def __init__(self, __iterable: Iterable[RenderObject] = []):
-        self._pool: dict[UUID, RenderObject] = {obj.id: obj for obj in __iterable}
-        self._keys: list[UUID] = list(self._pool.keys())
-        self._len: int = len(self._pool)
+    def __init__(self) -> None:
+        self.pool: dict[UUID, RenderObject] = {}
+        self.keys: list[UUID] = []
+        self.update_pool: list[UUID] = []
+        self.event_pool: list[UUID] = []
+
+        self._len: int = len(self.pool)
         self._iter: int = -1
 
-    def append(self, __obj: RenderObject | Iterable[RenderObject]) -> None:
-        if isinstance(__obj, RenderObject):
-            self.__setitem__(__obj.id, __obj)
-        elif isinstance(__obj, Iterable):
-            for obj in __obj:
-                self.append(obj)
-
-    def pop(self, __index: SupportsIndex = None) -> RenderObject:
-        self._len -= 1
-
-        if __index and __index < self._len - 1:
-            __key = self._keys.pop(__index)
-        elif __index and __index > self._len - 1:
-            raise IndexError("Indx out of bounds")
-        else:
-            __key = self._keys.pop()
-
-        __obj = self._pool[__key]
-        del self._pool[__key]
-        return __obj
-
-    def clear(self) -> None:
+    def _clear(self) -> None:
+        self.pool.clear()
+        self.keys.clear()
+        self.update_pool.clear()
+        self.event_pool.clear()
         self._len = 0
-        self._pool.clear()
-        self._keys.clear()
 
-    def update(self, __pool: objectPool) -> None:
-        self._pool = __pool._pool.copy()
-        self._keys = __pool._keys.copy()
+    def reset(self, __iter: Iterable[RenderObject]) -> None:
+        self._clear()
+        for __obj in __iter:
+            self._len += 1
+            self.pool[__obj.id] = __obj
+            self._sort_obj(__obj)
 
-    def __str__(self):
+    def _sort_obj(self, __obj: RenderObject) -> None:
+        self.keys.append(__obj.id)
+        if "update" in dir(__obj):
+            self.update_pool.append(__obj.id)
+
+        if "capture_events" in dir(__obj):
+            self.event_pool.append(__obj.id)
+
+    def __str__(self) -> str:
         _str: str = ""
-        for __obj in self._pool.values():
+        for __obj in self.pool.values():
             _str += __obj.__str__()
         return _str
 
@@ -55,16 +50,11 @@ class objectPool:
         return self
 
     def __getitem__(self, __k: UUID) -> RenderObject:
-        return self._pool[__k]
-
-    def __setitem__(self, __k: UUID, __obj: RenderObject) -> None:
-        self._pool[__k] = __obj
-        self._keys.append(__k)
-        self._len += 1
+        return self.pool[__k]
 
     def __next__(self) -> RenderObject:
         self._iter += 1
         if self._iter < self._len:
-            return self._pool[self._keys[self._iter]]
+            return self.pool[self.keys[self._iter]]
         self._iter = -1
         raise StopIteration

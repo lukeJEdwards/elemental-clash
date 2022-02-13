@@ -1,112 +1,104 @@
 from __future__ import annotations
-from typing import Optional
-from uuid import uuid4
-from os import listdir
+from dataclasses import dataclass, field
+from typing import Iterable, Optional
 
-from pygame import MOUSEBUTTONDOWN, Rect, Surface, Vector2, mouse
+
+from uuid import UUID, uuid4
+
+from pygame import Rect, Surface, mouse
+from pygame.constants import MOUSEBUTTONDOWN
 from pygame.event import Event
 
-from utils.constants import characterType, characterState
-from utils.functions import load_images
-from utils.paths import assetsDirs
+from components.base import Dimension, Point, Size, Location
+
+from utils.constants import BACKGROUND, Colour
+from utils.fonts import FONT_NORMAL_L
+from utils.functions import get_center
 
 
-def get_center(pos: tuple[int, int], size: tuple[int, int]) -> tuple[int, int]:
-    return pos[0] - size[0] // 2, pos[1] - size[1] // 2
+class Screen(Dimension):
+    def __init__(self, size: Size) -> None:
+        super().__init__(size=size)
+
+    @property
+    def background(self) -> BACKGROUND:
+        pass
+
+    def load_pool(self) -> Iterable[RenderObject]:
+        pass
 
 
-class RenderObject:
-    def __init__(self, pos: tuple[int, int], sprite: Surface, **kwargs) -> None:
-        self.id = uuid4()
-        self.currrent_sprite: Surface = sprite
-        self.size: tuple[int, int] = sprite.get_size()
-        self.pos: Vector2 = Vector2(get_center(pos, self.size)) if kwargs.get("center", False) else Vector2(pos)
+@dataclass
+class Title(Location):
+    pos: Point
+    text: str
+    colour: Colour
+    id: UUID = field(default_factory=uuid4)
+    alpha: int = 255
 
     def render(self, context: Surface) -> None:
-        context.blit(self.currrent_sprite, self.pos)
+        surf = FONT_NORMAL_L.render(self.text, True, self.colour.value)
+        surf.set_alpha(self.alpha)
+        rect = surf.get_rect()
+        rect.center = (self.x, self.y + 4)
+        context.blit(surf, rect)
 
-    def __str__(self) -> str:
-        return f"pos:{self.pos}\nsize:{self.size}\n"
+
+class RenderObject(Location, Dimension):
+    def __init__(self, pos: Point, sprite: Surface, **kwargs) -> None:
+        super().__init__(pos=pos, size=Size(*sprite.get_size()))
+        self.id: UUID = uuid4()
+        self.currrent_sprite: Surface = sprite
+
+        if kwargs.get("center", False):
+            self.pos.update(*get_center(pos, self.size))
+
+    def move_ip(self, x: int, y: int) -> None:
+        self.pos.move_ip(x, y)
+
+    def render(self, context: Surface) -> None:
+        context.blit(self.currrent_sprite, self.pos.toTuple())
+
+    def __repr__(self) -> str:
+        return f"RenderObject(id={self.id}, pos={repr(self.pos)}, size={repr(self.size)})"
 
 
 class GuiObject(RenderObject):
-    def __init__(self, pos: tuple[int, int], sprite: Surface, **kwargs):
+    def __init__(self, pos: Point, sprite: Surface, **kwargs) -> None:
         super().__init__(pos, sprite, **kwargs)
 
     def update(self, dt: float) -> None:
         pass
 
-    def capture_events(self, event: Event) -> None:
-        pass
-
-    def __str__(self) -> str:
-        return super().__str__()
-
 
 class GuiInteractable(GuiObject):
-    def __init__(self, pos: tuple[int, int], sprite: Surface, active_sprite: Surface, **kwargs):
+    def __init__(self, pos: Point, sprite: Surface, active_sprite: Surface, **kwargs) -> None:
         super().__init__(pos=pos, sprite=sprite, **kwargs)
 
-        self.rect: Rect = Rect(self.pos, self.size)
+        self.rect: Rect = Rect(self.pos.toTuple(), self.size.toTuple())
+
         self.default_sprite: Surface = sprite
         self.active_sprite: Surface = active_sprite
-        self.orginal_pos: tuple[int, int] = pos
+
         self.clicked: bool = False
 
-    def is_clicked(self, event: Event) -> bool:
-        return event.type == MOUSEBUTTONDOWN and self.is_mouse_hovering()
-
-    def is_mouse_hovering(self) -> bool:
+    @property
+    def hovering(self) -> bool:
         return self.rect.collidepoint(mouse.get_pos())
 
+    @property
+    def active(self) -> bool:
+        return self.hovering
+
     def move_ip(self, x: int, y: int) -> None:
-        self.pos.update(self.pos.x + x, self.pos.y + y)
+        super().move_ip(x, y)
         self.rect.move_ip(x, y)
 
     def update(self, dt: Optional[float] = 0) -> None:
-        self.currrent_sprite = self.active_sprite if self.is_mouse_hovering() else self.default_sprite
-
-    def __str__(self) -> str:
-        return super().__str__() + f"{self.rect}\n"
-
-
-class CharacterObject(RenderObject):
-    def __init__(self, character_type: characterType, **kwargs) -> None:
-        super().__init__(**kwargs)
-
-        self.rect = Rect(self.size, self.pos)
-
-        self.character_type: characterType = character_type
-        self.sprites: dict[characterState, tuple[Surface, ...]] = self.load_moves()
-
-        self.last_updated: float = 0
-        self.current_index: int = 0
-        self.current_state: characterState = characterState.IDLE
-        self.current_sprite: Surface = self.ge_current_state()[0]
-
-    def load_sprites(self, dirname: str) -> tuple[Surface, ...]:
-        return load_images(listdir(dirname))
-
-    def load_moves(self) -> dict[characterState, tuple[Surface, ...]]:
-        dirs = listdir(f"{assetsDirs.CHARACTER_FILES}\\{self.character_type.value}")
-        return {characterState(dir): self.get_sprites(dir) for dir in dirs}
-
-    def get_current_state(self) -> tuple[Surface, ...]:
-        return self.sprites[self.currrent_state]
-
-    def change_state(self, state: characterState) -> None:
-        self.currrent_state = state
-        self.current_index = 0
-
-    def next(self) -> None:
-        self.current_index = (self.current_index + 1) % len(self.get_current_state())
+        self.currrent_sprite = self.active_sprite if self.active else self.default_sprite
 
     def capture_events(self, event: Event) -> None:
-        pass
+        self.clicked = event.type == MOUSEBUTTONDOWN and self.hovering
 
-    def update(self, dt: float) -> None:
-        self.last_updated += dt
-
-        if self.last_updated > 0.1:
-            self.last_updated = 0
-            self.next()
+    def __repr__(self) -> str:
+        return f"GuiInteractable({super().__repr__()[13:-1]}, rect={repr(self.rect)})"

@@ -1,23 +1,6 @@
-from pygame import font
 from pygame.font import Font
-
 from utils.paths import assetsDirs
 
-__all__ = [
-    "FONT_NORMAL_S",
-    "FONT_NORMAL_M",
-    "FONT_NORMAL_L",
-    "FONT_NORMAL_XL",
-    "FONT_NORMAL_XXL",
-    "FONT_LIGHT_S",
-    "FONT_LIGHT_M",
-    "FONT_LIGHT_L",
-    "FONT_LIGHT_XL",
-    "FONT_LIGHT_XXL",
-]
-
-
-font.init()
 
 FONT_NORMAL_S = Font(f"{assetsDirs.FONTS}\\Abaddon Bold.ttf", 16)
 FONT_NORMAL_M = Font(f"{assetsDirs.FONTS}\\Abaddon Bold.ttf", 32)

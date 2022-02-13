@@ -1,36 +1,33 @@
-import socket
-from typing import Optional
-from server.server import PORT, IP
+from dataclasses import dataclass
+from socket import socket, AF_INET, SOCK_STREAM, error
 
-__all__ = ["CLIENT"]
+from server.server import IP, PORT
+from systems.stateMachine import GAME_STATE
 
 
-class networkClient:
-    def __init__(self):
-        self.client: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+@dataclass
+class Client:
+    client: socket = socket(AF_INET, SOCK_STREAM)
 
-    def get_address(self, host: str) -> tuple[str, int]:
-        return (host, PORT)
-
-    def connect(self, host: Optional[str] = IP) -> str | None:
+    def connect(self, ip: str = IP) -> bool:
         try:
-            self.client.connect(self.get_address(host))
-            self.id = self.client.recv(2048).decode()
-        except socket.error:
-            return f"{host}:{PORT} failed"
+            self.client.connect((ip, PORT))
+            GAME_STATE.player.load(self.client.recv(2048))
+            return True
+        except error:
+            return False
 
-    def disconnect(self):
+    def disconnect(self) -> None:
         self.client.close()
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client = socket(AF_INET, SOCK_STREAM)
 
-    def send(self, data) -> str:
+    def send(self) -> None:
         try:
-            self.client.send(str.encode(data))
-            reply = self.client.recv(2048).decode()
-            return reply
-        except socket.error as e:
+            self.client.send(GAME_STATE.player.pickle())
+            GAME_STATE.opponent.load(self.client.recv(2048))
+        except error as e:
             print(str(e))
             self.client.close()
 
 
-CLIENT: networkClient = networkClient()
+CLIENT: Client = Client()

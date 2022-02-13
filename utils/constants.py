@@ -1,27 +1,41 @@
 from enum import Enum
 
-from pygame import Surface
+from pygame import SRCALPHA, Surface
+
 
 from systems.settings import SETTINGS
-from utils.functions import load_background
 
-__all__ = ["ORIGIN", "BLACK", "WHITE", "MENU_BACKGROUND"]
+from utils.functions import load_image
+from utils.paths import assetsDirs
 
 
 ORIGIN: tuple[int, int] = (0, 0)
-BLACK: tuple[int, int, int] = (0, 0, 0)
-WHITE: tuple[int, int, int] = (255, 255, 255)
 
 
-MENU_BACKGROUND: Surface = load_background("menu-background.png", SETTINGS["SIZE"])
+class BACKGROUND(Enum):
+    MENU_BACKGROUND: Surface = load_image(f"{assetsDirs.BACKGROUNDS}\\menu-background.png", SETTINGS["SIZE"])
+    GAME: Surface = load_image(f"{assetsDirs.BACKGROUNDS}\\background_0.png", SETTINGS["SIZE"])
+    GAME_FLOOR: Surface = load_image(f"{assetsDirs.BACKGROUNDS}\\floor.png", SETTINGS["SIZE"])
+
+
+class BARS(Enum):
+    HEALTH: Surface = load_image(f"{assetsDirs.UI}\\health_bar.png", (306, 48))
+    ENERGY: Surface = load_image(f"{assetsDirs.UI}\energy_bar.png", (384, 64))
+
+
+class Colour(Enum):
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    FILLER = (255, 255, 255, 127)
+    TITLE = (255, 171, 219)
 
 
 class characterType(Enum):
-    FIRE = "fire_knight"
-    WATER = "water_priestess"
-    EARTH = "ground_monk"
-    AIR = "wind_hashashin"
-    NONE = ""
+    FIRE = f"{assetsDirs.ICONS}\\fire_knight.png"
+    WATER = f"{assetsDirs.ICONS}\\water_priestess.png"
+    EARTH = f"{assetsDirs.ICONS}\\ground_monk.png"
+    AIR = f"{assetsDirs.ICONS}\\wind_hashashin.png"
+    NONE = None
 
 
 class characterState(Enum):
@@ -29,15 +43,15 @@ class characterState(Enum):
     ATK_2 = "1_atk"
     ATK_3 = "3_atk"
     ATK_SP = "sp_atk"
-    DEATH = ("death",)
-    DEFEND = ("defend",)
-    IDLE = ("idle",)
-    JUMP = ("jump",)
-    ROLL = ("roll",)
-    RUN = ("run",)
-    TAKE_HIT = ("take_hit",)
-    MEDITATE = ("meditate",)
-    HEAL = ("heal",)
+    DEATH = "death"
+    DEFEND = "defend"
+    IDLE = "idle"
+    JUMP = "jump"
+    ROLL = "roll"
+    RUN = "run"
+    TAKE_HIT = "take_hit"
+    MEDITATE = "meditate"
+    HEAL = "heal"
 
 
 class notificationType(Enum):

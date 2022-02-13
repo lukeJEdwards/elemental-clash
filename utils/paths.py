@@ -1,7 +1,5 @@
 import os
 
-__all__ = ["CWD", "path_exists", "SETTINGS_DIR", "assetsDirs"]
-
 
 def relitive_path(*paths: list[str]) -> str:
     return os.path.join(CWD, *paths)
@@ -19,7 +17,7 @@ ASSETS = os.path.join("assets")
 
 class assetsDirs:
     BACKGROUNDS: str = relitive_path(ASSETS, "backgrounds")
-    CHARACTER_FILES:str = relitive_path(ASSETS, "characters")
+    CHARACTER_FILES: str = relitive_path(ASSETS, "characters")
     FONTS: str = relitive_path(ASSETS, "fonts")
     ICONS: str = relitive_path(ASSETS, "icons")
     UI: str = relitive_path(ASSETS, "ui")

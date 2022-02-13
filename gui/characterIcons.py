@@ -1,8 +1,9 @@
-from typing import Optional
 from pygame import SRCALPHA, Surface
 from pygame.event import Event
+from components.base import Point
 
-from components.Objects import GuiInteractable, GuiObject
+from components.objects import GuiInteractable, GuiObject
+from server.client import CLIENT
 from systems.stateMachine import GAME_STATE
 
 from utils.constants import ORIGIN, characterType
@@ -10,14 +11,16 @@ from utils.functions import load_image, scale_image
 from utils.paths import assetsDirs
 
 
-background = load_image(f"{assetsDirs.UI}\\player-border-background.png")
-border = lambda active: load_image(f'{assetsDirs.UI}\\player-{"border-active" if active else "border"}.png')
+background: str = load_image(f"{assetsDirs.UI}\\player-border-background.png")
 
-icons = {
-    characterType.FIRE: load_image(f"{assetsDirs.ICONS}\\{characterType.FIRE.value}.png"),
-    characterType.EARTH: load_image(f"{assetsDirs.ICONS}\\{characterType.EARTH.value}.png"),
-    characterType.WATER: load_image(f"{assetsDirs.ICONS}\\{characterType.WATER.value}.png"),
-    characterType.AIR: load_image(f"{assetsDirs.ICONS}\\{characterType.AIR.value}.png"),
+border: Surface = load_image(f"{assetsDirs.UI}\\player-border.png")
+border_active: Surface = load_image(f"{assetsDirs.UI}\\player-border-active.png")
+
+icons: dict[characterType, Surface] = {
+    characterType.FIRE: load_image(characterType.FIRE.value),
+    characterType.EARTH: load_image(characterType.EARTH.value),
+    characterType.WATER: load_image(characterType.WATER.value),
+    characterType.AIR: load_image(characterType.AIR.value),
     characterType.NONE: Surface((64, 64), SRCALPHA),
 }
 
@@ -27,12 +30,12 @@ def make_icon(character_type: characterType, active: bool):
     canvas = Surface(size, SRCALPHA)
     canvas.blit(scale_image(background, size), ORIGIN)
     canvas.blit(scale_image(icons[character_type], (106, 106)), (11, 11))
-    canvas.blit(scale_image(border(active), size), ORIGIN)
+    canvas.blit(scale_image(border_active if active else border, size), ORIGIN)
     return canvas
 
 
 class CharacterIcon(GuiInteractable):
-    def __init__(self, pos: tuple[int, int], character_type: characterType, **kwargs):
+    def __init__(self, pos: Point, character_type: characterType, **kwargs):
         DEFAULT_SPRITE = make_icon(character_type, False)
         ACTIVE_SPRITE = make_icon(character_type, True)
 
@@ -40,38 +43,50 @@ class CharacterIcon(GuiInteractable):
 
         self.character_type = character_type
 
-    def capture_events(self, event: Event) -> None:
-        if self.is_clicked(event) and not GAME_STATE._player_data["1"]["ready"]:
-            GAME_STATE._player_data["1"]["character"] = self.character_type
+    @property
+    def active(self) -> bool:
+        return GAME_STATE.player_character == self.character_type
 
-    def update(self, dt: Optional[float] = 0) -> None:
+    def update(self, dt: float) -> None:
         super().update()
-        if GAME_STATE._player_data["1"]["ready"]:
-            self.currrent_sprite = self.default_sprite
 
-        if GAME_STATE._player_data["1"]["character"] == self.character_type:
-            self.currrent_sprite = self.active_sprite
+    def capture_events(self, event: Event) -> None:
+        super().capture_events(event)
+
+        if self.clicked and self.character_type != GAME_STATE.player_character:
+            GAME_STATE.player_character = self.character_type
+            CLIENT.send()
+
+    def __repr__(self) -> str:
+        return f"CharacterIcon({super().__repr__()[16:-1]})"
 
 
 class ChosenCharacterIcon(GuiObject):
-    def __init__(self, pos: tuple[int, int], player: str, **kwargs):
-        self.canvas: Surface = Surface((78, 78), SRCALPHA)
-        super().__init__(pos, self.canvas, **kwargs)
+    def __init__(self, pos: Point, opponent: bool, **kwargs):
+        super().__init__(pos, Surface((78, 78), SRCALPHA), **kwargs)
 
-        self.icon: Surface = icons[characterType.NONE]
-        self.background = scale_image(background, self.size)
-        self.player = player
+        self.character: characterType = characterType.NONE
+        self.background: Surface = scale_image(background, (78, 78))
+        self.border: Surface = scale_image(border, (78, 78))
+        self.border_active: Surface = scale_image(border_active, (78, 78))
+        self.opponent: bool = opponent
 
-    def change_icon(self, character_type: characterType) -> None:
-        self.icon = icons[character_type]
+    @property
+    def ready(self) -> bool:
+        return GAME_STATE.opponent_ready if self.opponent else GAME_STATE.player_ready
 
     def update(self, dt: float) -> None:
-        if GAME_STATE._player_data[self.player]["character"] != characterType.NONE:
-            self.change_icon(GAME_STATE._player_data[self.player]["character"])
+        if self.opponent:
+            self.character = GAME_STATE.opponent_character
+        else:
+            self.character = GAME_STATE.player_character
 
     def render(self, context: Surface) -> None:
-        self.canvas.fill((0, 0, 0, 0))
-        self.canvas.blit(self.background, ORIGIN)
-        self.canvas.blit(self.icon, (5, 6))
-        self.canvas.blit(scale_image(border(GAME_STATE._player_data[self.player]["ready"]), self.size), ORIGIN)
-        context.blit(self.canvas, (self.pos.x, self.pos.y - self.size[0] // 4))
+        self.currrent_sprite.fill((0, 0, 0, 0))
+        self.currrent_sprite.blit(self.background, ORIGIN)
+        self.currrent_sprite.blit(icons[self.character], (5, 6))
+        self.currrent_sprite.blit(self.border_active if self.ready else self.border, ORIGIN)
+        super().render(context)
+
+    def __repr__(self) -> str:
+        return f"ChosenCharacterIcon({super().__repr__()[13:-1]})"
