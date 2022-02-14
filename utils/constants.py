@@ -1,7 +1,6 @@
+import socket
 from enum import Enum
-
-from pygame import SRCALPHA, Surface
-
+from pygame import Surface
 
 from systems.settings import SETTINGS
 
@@ -10,6 +9,10 @@ from utils.paths import assetsDirs
 
 
 ORIGIN: tuple[int, int] = (0, 0)
+
+IP = socket.gethostbyname(socket.gethostname())
+PORT = 5555
+BUFFER = 512
 
 
 class BACKGROUND(Enum):

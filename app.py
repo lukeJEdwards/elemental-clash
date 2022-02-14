@@ -8,10 +8,12 @@ from systems.settings import SETTINGS
 init()
 window = display.set_mode(SETTINGS["SIZE"])
 
-from components.base import Size, textObject
+from components.base import textObject
 
 from screens.MainMenu import MainMenuScreen
 from screens.game import GameScreen
+
+from server.client import CLIENT
 
 from systems.stateMachine import GAME_STATE
 from systems.renderer import Renderer
@@ -45,8 +47,12 @@ def main():
             GAME_STATE.capture_events(e)
 
         GAME_STATE.update(dt)
+
         if GAME_STATE.game_ready:
             GAME_STATE.change_state(GameScreen)
+
+        if GAME_STATE.connected:
+            GAME_STATE.opponent = CLIENT.send(GAME_STATE.player)
 
         renderer.render()
         window.blit(*fps_counter.render(50, 50))

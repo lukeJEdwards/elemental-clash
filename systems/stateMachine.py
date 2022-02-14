@@ -1,11 +1,13 @@
-from typing import Type
+from typing import Iterable, Type
 from pygame.event import Event
-from components.base import Size
 
+from components.base import Size
 from components.objects import GuiInteractable, Screen
 from components.objectPools import objectPool
 
+from server.client import CLIENT
 from server.player import Player
+
 from systems.settings import SETTINGS
 
 from utils.constants import characterType
@@ -23,8 +25,16 @@ class gameState:
 
         self.server_ip: str = ""
 
-        self.player: Player = Player()
-        self.opponent: Player = Player()
+        self.index: int = -1
+        self.players: list[Player] = [Player(index=0), Player(index=1)]
+
+    @property
+    def player(self) -> Player:
+        return self.players[self.index]
+
+    @player.setter
+    def player(self, player: Player) -> None:
+        self.players[self.index] = player
 
     @property
     def player_character(self) -> characterType:
@@ -49,6 +59,18 @@ class gameState:
     @player_ready.setter
     def player_ready(self, ready: bool):
         self.player.ready = ready
+
+    @property
+    def opponent_index(self) -> int:
+        return 1 if self.index == 0 else 0
+
+    @property
+    def opponent(self) -> Player:
+        return self.players[self.opponent_index]
+
+    @opponent.setter
+    def opponent(self, player: Player) -> None:
+        self.players[self.opponent_index] = player
 
     @property
     def opponent_name(self) -> str:

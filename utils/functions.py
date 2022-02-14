@@ -1,6 +1,5 @@
-from typing import Optional, Iterable
-
 import time
+from typing import Optional, Iterable
 from pygame import Surface, image, transform
 
 

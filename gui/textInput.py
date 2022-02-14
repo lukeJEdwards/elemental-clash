@@ -63,12 +63,19 @@ class PlayerLable(GuiObject):
         super().__init__(pos, load_image(f"{assetsDirs.UI}\\text-input-active.png", (306, 48)), **kwargs)
         self.opponent = opponent
 
-        text: textObject = textObject(self.name, FONT_LIGHT_M, Colour.WHITE)
-        self.currrent_sprite.blit(*text.render(self.width // 2, self.height // 2))
+        self.text: textObject = textObject(self.name, FONT_LIGHT_M, Colour.WHITE)
 
     @property
     def name(self) -> str:
         return GAME_STATE.opponent_name if self.opponent else GAME_STATE.player_name
+
+    def update(self, dt: float) -> None:
+        self.text.update(self.name)
+
+    def render(self, context: Surface) -> None:
+        super().render(context)
+        txt_surf, rect = self.text.render(self.x + self.width / 2, self.y + self.height / 2)
+        context.blit(txt_surf, rect)
 
     def __repr__(self) -> str:
         return f"PlayerLable({super().__repr__()[13:-1]})"

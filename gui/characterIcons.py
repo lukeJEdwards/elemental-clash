@@ -55,7 +55,6 @@ class CharacterIcon(GuiInteractable):
 
         if self.clicked and self.character_type != GAME_STATE.player_character:
             GAME_STATE.player_character = self.character_type
-            CLIENT.send()
 
     def __repr__(self) -> str:
         return f"CharacterIcon({super().__repr__()[16:-1]})"

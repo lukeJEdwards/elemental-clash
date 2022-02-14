@@ -39,20 +39,25 @@ class MainMenuScreen(Screen):
         ]
 
     def connect(self, ip: str) -> None:
-        CLIENT.connect(ip)
-        CLIENT.send()
-        GAME_STATE.server_ip = ip
-        GAME_STATE.player_name = self.name.text
-        GAME_STATE.change_state(CharacterSelectionScreen)
+        players = CLIENT.connect(ip)
+        if players:
+            GAME_STATE.connected = True
+            GAME_STATE.server_ip = ip
+            GAME_STATE.player_name = self.name.text
+            GAME_STATE.change_state(CharacterSelectionScreen)
+        else:
+            GAME_STATE.notification_pool.append(Notification("Could not connect!", notificationType.ERROR))
 
     def connect_to_server(self) -> None:
         if self.name.text and self.ip.text:
+            GAME_STATE.index = 1
             self.connect(self.ip.text)
         else:
             GAME_STATE.notification_pool.append(Notification("No IP address or Name", notificationType.ALERT))
 
     def start_local_server(self) -> None:
         if self.name.text:
+            GAME_STATE.index = 0
             GAME_STATE.run_server()
             start_new_thread(SERVER.run, ())
             self.connect(IP)

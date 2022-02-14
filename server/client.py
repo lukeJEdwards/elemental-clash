@@ -1,31 +1,36 @@
-from dataclasses import dataclass
-from socket import socket, AF_INET, SOCK_STREAM, error
+import socket
+import pickle
 
-from server.server import IP, PORT
-from systems.stateMachine import GAME_STATE
+from dataclasses import dataclass
+
+from server.player import Player
+from utils.constants import IP, PORT, BUFFER
 
 
 @dataclass
 class Client:
-    client: socket = socket(AF_INET, SOCK_STREAM)
+    client: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def connect(self, ip: str = IP) -> bool:
+    def connect(self, ip: str = IP) -> list[Player]:
         try:
             self.client.connect((ip, PORT))
-            GAME_STATE.player.load(self.client.recv(2048))
-            return True
-        except error:
-            return False
+            return pickle.loads(self.client.recv(2048))
+        except socket.error:
+            pass
 
     def disconnect(self) -> None:
         self.client.close()
-        self.client = socket(AF_INET, SOCK_STREAM)
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def send(self) -> None:
+    def send(self, player: Player) -> Player:
         try:
-            self.client.send(GAME_STATE.player.pickle())
-            GAME_STATE.opponent.load(self.client.recv(2048))
-        except error as e:
+            self.client.send(pickle.dumps(player))
+            data: bytes = self.client.recv(BUFFER)
+
+            if data:
+                return pickle.loads(data)
+
+        except socket.error as e:
             print(str(e))
             self.client.close()
 
