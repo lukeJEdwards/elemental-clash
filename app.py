@@ -6,57 +6,35 @@ from pygame.constants import QUIT
 from systems.settings import SETTINGS
 
 init()
-window = display.set_mode(SETTINGS["SIZE"])
+window = display.set_mode(SETTINGS["SIZE"].to_tuple())
 
-from components.base import textObject
-
-from screens.MainMenu import MainMenuScreen
-from screens.game import GameScreen
-
-from server.client import CLIENT
-
-from systems.stateMachine import GAME_STATE
-from systems.renderer import Renderer
-
-from utils.constants import Colour
+from screens.mainMenu import MainMenu
+from systems.gameState import GAMESTATE
 from utils.functions import get_dt
-from utils.fonts import FONT_LIGHT_M
 
 
 def main():
-    renderer = Renderer(window)
-
     clock = Clock()
-    fps_counter = textObject("{:.2}".format(str(clock.get_fps())), FONT_LIGHT_M, Colour.WHITE)
-
     dt, previous_time = 0, 0
-
     running = True
 
-    GAME_STATE.change_state(MainMenuScreen)
-
     while running:
-
         clock.tick(SETTINGS["FPS_TARGET"])
         dt, previous_time = get_dt(previous_time)
-        fps_counter.update("{:.2}".format(str(clock.get_fps())))
 
         for e in event.get():
             if e.type == QUIT:
                 sys.exit()
-            GAME_STATE.capture_events(e)
+            GAMESTATE.capture_event(e)
 
-        GAME_STATE.update(dt)
+        GAMESTATE.update(dt)
 
-        if GAME_STATE.game_ready:
-            GAME_STATE.change_state(GameScreen)
 
-        if GAME_STATE.connected:
-            GAME_STATE.opponent = CLIENT.send(GAME_STATE.player)
 
-        renderer.render()
-        window.blit(*fps_counter.render(50, 50))
+        GAMESTATE.render(window)
         display.flip()
+
+        running = GAMESTATE.check_state()
 
 
 if __name__ == "__main__":

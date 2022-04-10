@@ -1,5 +1,10 @@
 import os
 
+CWD: str = os.getcwd()
+SETTINGS_DIR: str = os.path.join("settings.json")
+CHARACTER_FILES = os.path.join("data", "characters")
+ASSETS = os.path.join("assets")
+
 
 def relitive_path(*paths: list[str]) -> str:
     return os.path.join(CWD, *paths)
@@ -7,12 +12,6 @@ def relitive_path(*paths: list[str]) -> str:
 
 def path_exists(path: str) -> bool:
     return os.path.isfile(path)
-
-
-CWD: str = os.getcwd()
-SETTINGS_DIR: str = os.path.join("settings.json")
-CHARACTER_FILES = os.path.join("data", "characters")
-ASSETS = os.path.join("assets")
 
 
 class assetsDirs:

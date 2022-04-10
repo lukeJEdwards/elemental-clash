@@ -1,104 +1,74 @@
-from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Iterable, Optional
-
-
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from pygame import Rect, Surface, mouse
 from pygame.constants import MOUSEBUTTONDOWN
 from pygame.event import Event
 
-from components.base import Dimension, Point, Size, Location
-
-from utils.constants import BACKGROUND, Colour
-from utils.fonts import FONT_NORMAL_L
-from utils.functions import get_center
-
-
-class Screen(Dimension):
-    def __init__(self, size: Size) -> None:
-        super().__init__(size=size)
-
-    @property
-    def background(self) -> BACKGROUND:
-        pass
-
-    def load_pool(self) -> Iterable[RenderObject]:
-        pass
+from components.base import Size, Vec2
+from utils.constants import TAG
 
 
 @dataclass
-class Title(Location):
-    pos: Point
-    text: str
-    colour: Colour
-    id: UUID = field(default_factory=uuid4)
-    alpha: int = 255
+class RenderObject:
+    tag: TAG
+    pos: Vec2
+    size: Size
+    current_sprite: Surface
+    id:str = field(default_factory=lambda: uuid4().hex)
 
-    def render(self, context: Surface) -> None:
-        surf = FONT_NORMAL_L.render(self.text, True, self.colour.value)
-        surf.set_alpha(self.alpha)
-        rect = surf.get_rect()
-        rect.center = (self.x, self.y + 4)
-        context.blit(surf, rect)
+    def render(self, context:Surface) -> None:
+        context.blit(self.current_sprite, self.pos.to_tuple())
 
+@dataclass
+class AnimationObject:
+    sprites:list[Surface]
+    current_index:int = 0
 
-class RenderObject(Location, Dimension):
-    def __init__(self, pos: Point, sprite: Surface, **kwargs) -> None:
-        super().__init__(pos=pos, size=Size(*sprite.get_size()))
-        self.id: UUID = uuid4()
-        self.currrent_sprite: Surface = sprite
+    @property
+    def current_sprite(self) -> Surface:
+        return self.sprites[self.current_index]
 
-        if kwargs.get("center", False):
-            self.pos.update(*get_center(pos, self.size))
+    def get_react(self) -> Rect:
+        return self.current_sprite.get_rect()
 
-    def move_ip(self, x: int, y: int) -> None:
-        self.pos.move_ip(x, y)
+    def next_sprite(self) -> None:
+        self.current_index += 1
 
-    def render(self, context: Surface) -> None:
-        context.blit(self.currrent_sprite, self.pos.toTuple())
+@dataclass
+class UpdateObject(RenderObject):
+     
+    def move_ip(self, x:float, y:float):
+        self.pos.x += x
+        self.pos.y += y
 
-    def __repr__(self) -> str:
-        return f"RenderObject(id={self.id}, pos={repr(self.pos)}, size={repr(self.size)})"
-
-
-class GuiObject(RenderObject):
-    def __init__(self, pos: Point, sprite: Surface, **kwargs) -> None:
-        super().__init__(pos, sprite, **kwargs)
-
-    def update(self, dt: float) -> None:
+    def update(self, dt:float):
         pass
 
+class EventObject(UpdateObject):
+    def __init__(self, tag: TAG, pos: Vec2, size: Size, current_sprite: Surface):
+        super().__init__(tag, pos, size, current_sprite)
 
-class GuiInteractable(GuiObject):
-    def __init__(self, pos: Point, sprite: Surface, active_sprite: Surface, **kwargs) -> None:
-        super().__init__(pos=pos, sprite=sprite, **kwargs)
+        self.rect: Rect = self.current_sprite.get_rect()
 
-        self.rect: Rect = Rect(self.pos.toTuple(), self.size.toTuple())
 
-        self.default_sprite: Surface = sprite
-        self.active_sprite: Surface = active_sprite
+    def move_ip(self, x:float, y:float) -> None:
+        super().move_ip(x, y)
+        self.rect.move_ip(x, y)
 
-        self.clicked: bool = False
+    def collision(self, location:Rect|Vec2) -> bool:
+        return self.rect.colliderect(location) if isinstance(location, Rect) else self.rect.collidepoint(location)
+
+    def capture_event(self, event:Event) -> None:
+        pass
+
+@dataclass
+class GUIInteractable(EventObject):
 
     @property
     def hovering(self) -> bool:
         return self.rect.collidepoint(mouse.get_pos())
 
     @property
-    def active(self) -> bool:
-        return self.hovering
-
-    def move_ip(self, x: int, y: int) -> None:
-        super().move_ip(x, y)
-        self.rect.move_ip(x, y)
-
-    def update(self, dt: Optional[float] = 0) -> None:
-        self.currrent_sprite = self.active_sprite if self.active else self.default_sprite
-
-    def capture_events(self, event: Event) -> None:
-        self.clicked = event.type == MOUSEBUTTONDOWN and self.hovering
-
-    def __repr__(self) -> str:
-        return f"GuiInteractable({super().__repr__()[13:-1]}, rect={repr(self.rect)})"
+    def clicked(self, event:Event) -> bool:
+        return self.hovering and event.type == MOUSEBUTTONDOWN
