@@ -3,7 +3,7 @@ from pygame import K_BACKSPACE, K_RETURN, KEYDOWN, MOUSEBUTTONDOWN, Surface
 from pygame.event import Event
 
 from components.base import Point, textObject
-from components.objects import GuiInteractable, GuiObject
+from components.Objects import GuiInteractable, GuiObject
 from systems.stateMachine import GAME_STATE
 
 from utils.constants import Colour
@@ -59,16 +59,16 @@ class TextInput(GuiInteractable):
 
 
 class PlayerLable(GuiObject):
-    def __init__(self, pos: Point, opponent: bool, **kwargs) -> None:
+    def __init__(self, pos: Point, player_index: int, **kwargs) -> None:
         super().__init__(pos, load_image(f"{assetsDirs.UI}\\text-input-active.png", (306, 48)), **kwargs)
-        self.opponent = opponent
+        self.player_index = player_index
 
         text: textObject = textObject(self.name, FONT_LIGHT_M, Colour.WHITE)
         self.currrent_sprite.blit(*text.render(self.width // 2, self.height // 2))
 
     @property
     def name(self) -> str:
-        return GAME_STATE.opponent_name if self.opponent else GAME_STATE.player_name
+        return GAME_STATE.players[self.player_index].name
 
     def __repr__(self) -> str:
         return f"PlayerLable({super().__repr__()[13:-1]})"

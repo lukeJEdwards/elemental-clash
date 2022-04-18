@@ -2,7 +2,7 @@ from pygame import Surface
 from pygame.event import Event
 from components.base import Point, textObject
 
-from components.objects import GuiInteractable
+from components.Objects import GuiInteractable
 from systems.settings import SETTINGS
 from systems.stateMachine import GAME_STATE
 
@@ -13,7 +13,8 @@ from utils.paths import assetsDirs
 
 
 def create_notification(msg: str, type: notificationType):
-    notification = load_image(f"{assetsDirs.UI}\\{type.value}.png", (244, 76))
+    width = len(msg) * 8
+    notification = load_image(f"{assetsDirs.UI}\\{type.value}.png", (width, 76))
     txt_obj = textObject(msg, FONT_LIGHT_S, Colour.WHITE)
     notification.blit(*txt_obj.render(notification.get_width() // 2, notification.get_height() // 2))
     return notification

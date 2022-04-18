@@ -6,6 +6,10 @@ from utils.constants import ORIGIN
 from utils.functions import apply_method
 
 
+"""
+renders everything to the screen
+"""
+
 class Renderer:
     def __init__(self, window: Surface) -> None:
         self.window: Surface = window

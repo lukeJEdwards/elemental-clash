@@ -2,8 +2,9 @@ from pygame import Surface
 from pygame.event import Event
 
 from components.base import Point, staticPoint, textObject
-from components.objects import GuiInteractable
+from components.Objects import GuiInteractable
 from gui.notification import Notification
+from screens.game import GameScreen
 from systems.stateMachine import GAME_STATE
 
 from utils.constants import Colour, characterType, notificationType
@@ -66,10 +67,6 @@ class ReadyButton(GuiInteractable):
         ACTIVE_SPRITE = make_button_sprite("READY", True)
         super().__init__(pos, DEFAULT_SPRITE, ACTIVE_SPRITE, **kwargs)
 
-    @property
-    def active(self) -> bool:
-        return GAME_STATE.player_ready
-
     def update(self, dt: float) -> None:
         super().update(dt)
 
@@ -77,7 +74,8 @@ class ReadyButton(GuiInteractable):
         super().capture_events(event)
 
         if self.clicked:
-            GAME_STATE.player_ready = not GAME_STATE.player_ready
+            GAME_STATE.game_start = True
+            GAME_STATE.change_state(GameScreen)
 
     def __repr__(self) -> str:
         return f"ReadyButton({super().__repr__()[16:-1]})"

@@ -17,6 +17,9 @@ from utils.functions import get_center
 
 
 class Screen(Dimension):
+    """
+        Base screen class all screens inherit from
+    """
     def __init__(self, size: Size) -> None:
         super().__init__(size=size)
 
@@ -45,6 +48,9 @@ class Title(Location):
 
 
 class RenderObject(Location, Dimension):
+    """
+        Object all objects inherit from
+    """
     def __init__(self, pos: Point, sprite: Surface, **kwargs) -> None:
         super().__init__(pos=pos, size=Size(*sprite.get_size()))
         self.id: UUID = uuid4()
@@ -64,6 +70,9 @@ class RenderObject(Location, Dimension):
 
 
 class GuiObject(RenderObject):
+    """
+        Only Gui object inherit from this
+    """
     def __init__(self, pos: Point, sprite: Surface, **kwargs) -> None:
         super().__init__(pos, sprite, **kwargs)
 
@@ -72,6 +81,9 @@ class GuiObject(RenderObject):
 
 
 class GuiInteractable(GuiObject):
+    """
+        Only interactable gui objects inherit from this
+    """
     def __init__(self, pos: Point, sprite: Surface, active_sprite: Surface, **kwargs) -> None:
         super().__init__(pos=pos, sprite=sprite, **kwargs)
 

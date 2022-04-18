@@ -1,5 +1,9 @@
 import os
 
+"""
+this file was for reducing the amount of typeing needed 
+to find a file
+"""
 
 def relitive_path(*paths: list[str]) -> str:
     return os.path.join(CWD, *paths)

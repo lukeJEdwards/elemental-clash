@@ -1,6 +1,9 @@
 from pygame.font import Font
 from utils.paths import assetsDirs
 
+"""
+fonts used by the game
+"""
 
 FONT_NORMAL_S = Font(f"{assetsDirs.FONTS}\\Abaddon Bold.ttf", 16)
 FONT_NORMAL_M = Font(f"{assetsDirs.FONTS}\\Abaddon Bold.ttf", 32)

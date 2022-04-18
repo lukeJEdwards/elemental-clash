@@ -1,15 +1,13 @@
 from typing import Iterable
 
-from components.base import Point, Size
-from components.gameObjects import floorObject
-from components.objects import RenderObject, Screen
+from components.character import Character
+from components.base import Point, Size, staticPoint
+from components.gameObjects import floorObject, ScoreObject
+from components.Objects import RenderObject, Screen
 
-from gui.bars import HealthBar
-from gui.characterIcons import CharacterIcon
+from gui.characterIcons import ChosenCharacterIcon
 
-from systems.stateMachine import GAME_STATE
-
-from utils.constants import BACKGROUND, characterType
+from utils.constants import BACKGROUND
 
 
 class GameScreen(Screen):
@@ -22,9 +20,11 @@ class GameScreen(Screen):
 
     def load_pool(self) -> Iterable[RenderObject]:
         return [
-            CharacterIcon(Point(10, 10), GAME_STATE[GAME_STATE.my_id].character),
-            CharacterIcon(Point(1142, 10), GAME_STATE[GAME_STATE.oppent_id].character),
-            HealthBar(Point(148, 40), 100),
-            HealthBar(Point(826, 40), 100),
+            ChosenCharacterIcon(Point(10, 10), 0, (106, 106)),
+            ChosenCharacterIcon(Point(1142, 10), 1, (106, 106)),
+            ScoreObject(staticPoint(620,50), 0),
+            ScoreObject(staticPoint(660,50), 1),
             floorObject(Point(0, 0)),
+            Character(staticPoint(0, 323), 0, False),
+            Character(staticPoint(608, 323), 1, True),
         ]

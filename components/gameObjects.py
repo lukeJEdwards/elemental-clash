@@ -1,26 +1,40 @@
-from __future__ import annotations
-from uuid import uuid4
+from pygame import Surface
 
-from pygame import Rect, Surface
-from components.base import Location, Point, Size
-from utils.constants import BACKGROUND
+from components.Objects import RenderObject
+from components.base import Point, staticPoint, textObject
 
+from systems.stateMachine import GAME_STATE
 
-class gameObject(Location):
-    def __init__(self, pos: Point, currrent_sprite: Surface) -> None:
-        super().__init__(pos, Size(*currrent_sprite.get_size()))
+from utils.constants import BACKGROUND, Colour
+from utils.fonts import FONT_NORMAL_L, FONT_NORMAL_XXL
 
-        self.currrent_sprite: Surface = currrent_sprite
-        self.rect: Rect = currrent_sprite.get_rect()
-
-    def collision_check(self, __obj: gameObject) -> bool:
-        return self.rect.colliderect(__obj.rect)
-
-    def render(self, contex: Surface) -> None:
-        contex.blit(self.currrent_sprite, self.pos.toTuple())
-
-
-class floorObject(gameObject):
+class floorObject(RenderObject):
     def __init__(self, pos: Point) -> None:
         super().__init__(pos, BACKGROUND.GAME_FLOOR.value)
-        self.id = uuid4()
+
+class ScoreObject(RenderObject):
+
+    def __init__(self, pos:staticPoint, player_index: int):
+        super().__init__(pos, Surface((100, 100)))
+
+        self.player_index = player_index
+        self.txt_obj = textObject(str(self.score), FONT_NORMAL_L, Colour.WHITE)
+
+    @property
+    def score(self) -> int:
+        return GAME_STATE.players[self.player_index].hit_count
+
+    def update(self, dt:float) -> None:
+        self.txt_obj.update(str(self.score))
+
+    def render(self, context:Surface) -> None:
+        context.blit(*self.txt_obj.render(*self.pos))
+
+class winMsg(RenderObject):
+    def __init__(self,pos:staticPoint, winner:str, **kwargs) -> None:
+        super().__init__(pos, Surface((100, 100)), **kwargs)
+        self.txt_obj = textObject(winner, FONT_NORMAL_XXL, Colour.WHITE)
+
+    def render(self, context:Surface) -> None:
+        context.blit(*self.txt_obj.render(*self.pos))
+

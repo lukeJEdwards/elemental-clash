@@ -14,6 +14,9 @@ from utils.fonts import FONT_NORMAL_L
 
 @dataclass
 class iterator:
+    """
+        Class to add iteration to an object
+    """
     iter: Iterable
     __iter: int = -1
 
@@ -35,35 +38,42 @@ class iterator:
 
 
 class staticPoint(NamedTuple):
+    """
+        makes using tuple nice as index [0] and [1] are now named
+        to X and Y respectively
+    """
     x: int
     y: int
 
 
 class Point(iterator):
+    """
+        Point of screen
+    """
     def __init__(self, x=0, y=0):
         super().__init__([x, y])
 
     @property
-    def x(self) -> int:
+    def x(self) -> float:
         return self.iter[0]
 
     @x.setter
-    def x(self, value: int):
+    def x(self, value: float):
         self.iter[0] = value
 
     @property
-    def y(self) -> int:
+    def y(self) -> float:
         return self.iter[1]
 
     @y.setter
-    def y(self, value: int):
+    def y(self, value: float):
         self.iter[1] = value
 
-    def move_ip(self, __x: int, __y: int) -> None:
+    def move_ip(self, __x: float, __y: float) -> None:
         self.x += __x
         self.y += __y
 
-    def update(self, __x: int, __y: int) -> None:
+    def update(self, __x: float, __y: float) -> None:
         self.x, self.y = __x, __y
 
     def toTuple(self) -> tuple[float, float]:
@@ -71,6 +81,9 @@ class Point(iterator):
 
 
 class Size(iterator):
+    """
+        Used for sizes
+    """
     def __init__(self, width: float, height: float) -> None:
         super().__init__([width, height])
 
@@ -99,6 +112,9 @@ class Size(iterator):
 
 
 class Location:
+    """
+        Adds properties that point to the loaction
+    """
     def __init__(self, pos: Point, **kwargs) -> None:
         super().__init__(**kwargs)
         self.pos: Point = pos
@@ -116,6 +132,9 @@ class Location:
 
 
 class Dimension:
+    """
+        Adds properties that point to the size
+    """
     def __init__(self, size: Size, **kwargs) -> None:
         super().__init__(**kwargs)
         self.size = size
@@ -134,10 +153,14 @@ class Dimension:
 
 @dataclass
 class textObject:
+    """
+        For rendering any text in screen
+    """
     text: str
     font: Font
     colour: Colour
     alpha: int = 255
+    id:UUID = uuid4()
 
     def update(self, text: str) -> None:
         self.text = text

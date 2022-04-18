@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Iterator, Iterable
 from uuid import UUID
 
-from components.objects import RenderObject
+from components.Objects import RenderObject
 
 
 class objectPool:
