@@ -15,6 +15,7 @@ class Player:
     name: str = ""
     pos: math.Vector2 = field(default_factory=math.Vector2)
     collision_box: Rect = None
+    atk_collision_box: Rect = None
     character: characterType = characterType.FIRE
     state: characterState = characterState.IDLE
     hit_count: int = 0

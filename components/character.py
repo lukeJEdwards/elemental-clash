@@ -37,7 +37,7 @@ class Character:
         self.sprites_r:dict[characterState, list[Surface]] = load_sprites_arrays(self.player_info.character, False)
         self.sprites_l:dict[characterState, list[Surface]] = load_sprites_arrays(self.player_info.character, True)
 
-        self.collison_box:Rect = Rect((0,0), (400, 144))
+        self.collision_box:Rect = Rect((0,0), (400, 144))
 
         self.character_state:characterState = characterState.IDLE
         self.current_index: int = 0
@@ -92,10 +92,11 @@ class Character:
         self.horizontal_movement(dt * SETTINGS['FPS_TARGET'])
         self.vertical_movement(dt * SETTINGS['FPS_TARGET'])
 
-        self.collison_box.bottom = self.rect.bottom
-        self.collison_box.centerx = self.rect.centerx
+        self.collision_box.bottom = self.rect.bottom
+        self.collision_box.centerx = self.rect.centerx
 
-        self.player_info.collision_box = self.collison_box
+        self.player_info.collision_box = self.collision_box
+        self.player_info.atk_collision_box = self.rect
         self.player_info.pos = self.position
         self.player_info.state = self.character_state
 
@@ -116,9 +117,11 @@ class Character:
                 self.LEFT_KEY = True
                 self.FACING_LEFT = True
             elif event.key == self.key_mappings[keyMappings.RIGHT]:
+                self.character_state = characterState.JUMP
                 self.RIGHT_KEY = True
                 self.FACING_LEFT = False
             elif event.key == self.key_mappings[keyMappings.JUMP]:
+                self.character_state = characterState.JUMP
                 self.jump()
 
         if event.type == KEYUP:

@@ -21,13 +21,16 @@ from utils.functions import get_dt
 from utils.fonts import FONT_LIGHT_M
 
 
-def check_left_collision(player_index, other_player):
-    return (GAME_STATE.players[player_index].collision_box.left > GAME_STATE.players[other_player].collision_box.centerx + 10 or
-        GAME_STATE.players[player_index].collision_box.left < GAME_STATE.players[other_player].collision_box.centerx - 10) and GAME_STATE.players[player_index].state == characterState.AKT and GAME_STATE.players[other_player].state != characterState.DEFEND
+def check_collision(player_index, other_player):
+    current_player = GAME_STATE.players[player_index]
+    other_player = GAME_STATE.players[other_player]
 
-def check_right_collision(player_index, other_player):
-    return (GAME_STATE.players[player_index].collision_box.right > GAME_STATE.players[other_player].collision_box.centerx + 10 or
-        GAME_STATE.players[player_index].collision_box.right < GAME_STATE.players[other_player].collision_box.centerx - 10) and GAME_STATE.players[player_index].state == characterState.AKT and GAME_STATE.players[other_player].state != characterState.DEFEND
+    if current_player.state == characterState.AKT:
+        return current_player.atk_collision_box.colliderect(other_player.collision_box) and other_player.state != characterState.DEFEND
+
+    return False
+
+
 
 
 
@@ -71,21 +74,12 @@ def main():
             atk_timers[0] += dt
             atk_timers[1] += dt
 
-            print(atk_timers)
-
-            if check_left_collision(0, 1) and atk_timers[0] > atk_calldown:
+            if check_collision(0, 1) and atk_timers[0] > atk_calldown:
                 GAME_STATE.players[0].hit_count += 1
                 atk_timers[0] = 0
-            elif check_left_collision(1, 0) and atk_timers[1] > atk_calldown:
+            elif check_collision(1, 0) and atk_timers[1] > atk_calldown:
                 GAME_STATE.players[1].hit_count += 1
                 atk_timers[1] = 0
-            elif check_left_collision(0, 1) and atk_timers[0] > atk_calldown:
-                GAME_STATE.players[0].hit_count += 1
-                atk_timers[0] = 0
-            elif check_left_collision(1, 0) and atk_timers[1] > atk_calldown:
-                GAME_STATE.players[1].hit_count += 1
-                atk_timers[1] = 0
-
 
             if GAME_STATE.players[0].state == characterState.AKT:
                 atk_timers[0] = 0
